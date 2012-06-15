@@ -4,8 +4,8 @@
 
 <#@ template hostspecific="True" debug="True" #> 
 <#@ assembly name="System.Core.dll" #>
-<#@ assembly name="C:\Program Files (x86)\Hedgehog Development\Team Development for Sitecore (VS2010)\HedgehogDevelopment.SitecoreCommon.Data.dll" #> 
-<#@ assembly name="C:\Program Files (x86)\Hedgehog Development\Team Development for Sitecore (VS2010)\HedgehogDevelopment.SitecoreCommon.Data.Parser.dll" #> 
+<#@ assembly name="C:\%ProgramFiles%\Hedgehog Development\Team Development for Sitecore (VS2010)\HedgehogDevelopment.SitecoreCommon.Data.dll" #> 
+<#@ assembly name="C:\%ProgramFiles%\Hedgehog Development\Team Development for Sitecore (VS2010)\HedgehogDevelopment.SitecoreCommon.Data.Parser.dll" #> 
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System" #>
 <#@ import namespace="System.Linq" #>
