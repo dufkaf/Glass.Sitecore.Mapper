@@ -23,6 +23,7 @@ namespace Glass.Sitecore.Mapper.Configuration
 {
     public enum SitecoreFieldType
     {
+        NotSet,
         SingleLineText,
         RichText,
         Checkbox,

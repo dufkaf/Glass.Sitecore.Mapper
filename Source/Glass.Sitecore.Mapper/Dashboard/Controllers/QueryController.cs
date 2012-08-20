@@ -54,6 +54,8 @@ namespace Glass.Sitecore.Mapper.Dashboard.Controllers
         {
             if (cls.IsNullOrEmpty() || path.IsNullOrEmpty()) return null;
 
+            global::Sitecore.Context.Site = global::Sitecore.Configuration.Factory.GetSite("website");
+
             var types = GlassContext.Classes.Where(x => x.Key.FullName == cls);
             if (types.Any()) {
                 var type = types.First();
