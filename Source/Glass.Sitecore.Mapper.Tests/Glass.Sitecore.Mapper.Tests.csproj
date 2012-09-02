@@ -173,7 +173,7 @@
     <Compile Include="Dynamic\DynamicCollectionFixture.cs" />
     <Compile Include="Dynamic\DynamicExtensions.cs" />
     <Compile Include="Dynamic\DynamicItemFixture.cs" />
-    <Compile Include="HtmlFixture.cs" />
+    <Compile Include="GlassHtmlFixture.cs" />
     <Compile Include="InstanceContextFixture.cs" />
     <Compile Include="InterfaceFixture.cs" />
     <Compile Include="ItemExtensionsFixture.cs" />

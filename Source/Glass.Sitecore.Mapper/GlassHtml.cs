@@ -288,10 +288,36 @@ namespace Glass.Sitecore.Mapper
                     var site = global::Sitecore.Context.Site;
 
 
-                    //if the class a proxy then we have to get it's base type
-                    Type type = finalTarget is IProxyTargetAccessor ? finalTarget.GetType().BaseType : finalTarget.GetType();
-
                     InstanceContext context = Context.GetContext();
+
+
+                    //if the class a proxy then we have to get it's base type
+                    Type type;
+                    if (finalTarget is IProxyTargetAccessor)
+                    {
+                        //first try the base type
+                        type = finalTarget.GetType().BaseType;
+                        
+                        //if it doesn't contain the base type then we need to check the interfaces
+                        if(!context.Classes.ContainsKey(type)){
+                                     
+                            var interfaces = finalTarget.GetType().GetInterfaces();
+
+                            string name = finalTarget.GetType().Name;
+                            //be default castle will use the name of the class it is proxying for it's own name
+                            foreach (var inter in interfaces)
+                            {
+                                if (name.StartsWith(inter.Name))
+                                {
+                                    type = inter;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else
+                        type = finalTarget.GetType();
+
 
                     Guid id = Guid.Empty;
 
