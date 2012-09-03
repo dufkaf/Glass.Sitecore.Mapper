@@ -1,0 +1,35 @@
+﻿<#@ template hostspecific="True" debug="True" #> 
+<# 
+// Root namespace for generated templates. Should not end with a '.'
+string ConfigRootNamespace = "Glass.Demo.Application.Models";
+string ConfigNamespaceSuffix = ".Configuration";
+
+// Sitecore root path to templates to generate. Should not end with a '/'
+string ConfigRootTemplatePath = "/sitecore/templates/Configuration"; 
+
+// Relative path to TDS project
+string ConfigTDSProjectName = @"..\Glass.Sitecore.Mapper.Tds";
+
+IDictionary<string, string> ConfigTypeDictionary =
+            new Dictionary<string, string>
+                {
+                    { "checkbox", "bool" },
+                    { "datetime", "DateTime" },
+                    { "integer", "int" },
+                    { "number", "int" },
+                    { "single-line text", "string" },
+                    { "treelist", "System.Collections.Generic.IEnumerable<Guid>" },
+                    { "droplist", "string" },
+                    //{ "droplink", "ISitecoreItem" }
+                    // TODO Others
+                };
+
+
+this.Template_SitecoreModel_Render(
+	tdsProjectName: ConfigTDSProjectName,
+	rootNamespace: ConfigRootNamespace,
+	rootTemplatePath: ConfigRootTemplatePath,
+	typeDictionary: ConfigTypeDictionary,
+	namespaceSuffix: ConfigNamespaceSuffix
+);
+#><#@ include file="SitecoreModel.ttinclude" #>

@@ -1,0 +1,20 @@
+﻿<#@ template hostspecific="True" debug="True" #> 
+<# 
+// Root namespace for generated templates. Should not end with a '.'
+string ComponentsRootNamespace = "Glass.Demo.Application.Models";
+
+// Sitecore root path to templates to generate. Should not end with a '/'
+string ComponentsRootTemplatePath = "/sitecore/templates/Glass"; 
+
+// Relative path to TDS project
+string ComponentsTDSProjectName = @"..\Glass.Sitecore.Mapper.Tds";
+
+//System.Diagnostics.Debugger.Launch();
+//System.Diagnostics.Debugger.Break();
+
+this.Template_SitecoreModel_Render(
+	tdsProjectName: ComponentsTDSProjectName,
+	rootNamespace: ComponentsRootNamespace,
+	rootTemplatePath: ComponentsRootTemplatePath
+);
+#><#@ include file="SitecoreModel.ttinclude" #>

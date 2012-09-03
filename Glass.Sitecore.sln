@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glass.Sitecore.Mapper.Tests
 EndProject
 Project("{CAA73BB0-EF22-4D79-A57E-DF67B3BA9C80}") = "Glass.Sitecore.Mapper.Tds", "Glass.Sitecore.Mapper.Tds\Glass.Sitecore.Mapper.Tds.scproj", "{36538C16-38B6-4F5D-A6CE-E27901A33691}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glass.Sitecore.Mapper.Tds.Domain", "Glass.Sitecore.Mapper.Tds.Domain\Glass.Sitecore.Mapper.Tds.Domain.csproj", "{AC382655-1C38-490B-A398-FB6E7A319C21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,16 @@ Global
 		{36538C16-38B6-4F5D-A6CE-E27901A33691}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{36538C16-38B6-4F5D-A6CE-E27901A33691}.Release|Mixed Platforms.Deploy.0 = Release|Any CPU
 		{36538C16-38B6-4F5D-A6CE-E27901A33691}.Release|x86.ActiveCfg = Release|Any CPU
+		{AC382655-1C38-490B-A398-FB6E7A319C21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC382655-1C38-490B-A398-FB6E7A319C21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC382655-1C38-490B-A398-FB6E7A319C21}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AC382655-1C38-490B-A398-FB6E7A319C21}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AC382655-1C38-490B-A398-FB6E7A319C21}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AC382655-1C38-490B-A398-FB6E7A319C21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC382655-1C38-490B-A398-FB6E7A319C21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC382655-1C38-490B-A398-FB6E7A319C21}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AC382655-1C38-490B-A398-FB6E7A319C21}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AC382655-1C38-490B-A398-FB6E7A319C21}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +80,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{564CDD78-0939-436B-9C90-7AF9D95B9024} = {7D464095-7E51-40CD-9C8A-29B0821A7494}
 		{36538C16-38B6-4F5D-A6CE-E27901A33691} = {7D464095-7E51-40CD-9C8A-29B0821A7494}
+		{AC382655-1C38-490B-A398-FB6E7A319C21} = {7D464095-7E51-40CD-9C8A-29B0821A7494}
 		{D88371AA-7461-4945-B8DE-998EAA9257D4} = {F3EE438A-FEE6-439C-9083-F52449C0C4BB}
 	EndGlobalSection
 EndGlobal
