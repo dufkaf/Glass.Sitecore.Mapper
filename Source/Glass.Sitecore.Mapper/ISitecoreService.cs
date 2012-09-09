@@ -627,5 +627,17 @@ namespace Glass.Sitecore.Mapper
         /// <param name="target">The class to read from</param>
         /// <param name="item">The item to write to</param>
         void WriteToItem<T>(T target, Item item);
+
+
+        /// <summary>
+        /// Moves an item to the new parent
+        /// </summary>
+        /// <typeparam name="T">The type of the item to move</typeparam>
+        /// <typeparam name="K">The type of the parent to move the item to</typeparam>
+        /// <param name="item">The item to move</param>
+        /// <param name="newParent">The new parent</param>
+        /// <returns>The item beneath it's ne parent (remaps parent items)</returns>
+        void Move<T, K>(T item, K newParent);
+
     }
 }
