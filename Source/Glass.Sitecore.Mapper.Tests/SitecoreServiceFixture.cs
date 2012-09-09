@@ -27,6 +27,7 @@ using Sitecore.Data.Items;
 using Sitecore.Data;
 using Sitecore.SecurityModel;
 using Moq;
+using Glass.Sitecore.Mapper.Tests.Domain;
 
 namespace Glass.Sitecore.Mapper.Tests
 {
@@ -42,7 +43,11 @@ namespace Glass.Sitecore.Mapper.Tests
         {
 
             AttributeConfigurationLoader loader = new AttributeConfigurationLoader(
-                new string []{"Glass.Sitecore.Mapper.Tests.SitecoreServiceFixtureNS, Glass.Sitecore.Mapper.Tests"}
+                new string []{
+                    "Glass.Sitecore.Mapper.Tests.SitecoreServiceFixtureNS, Glass.Sitecore.Mapper.Tests",
+                    "Glass.Sitecore.Mapper.Tests.Domain, Glass.Sitecore.Mapper.Tests"
+
+                }
                 );
 
             _context = new Context(loader, new AbstractSitecoreDataHandler[]{new SitecoreIdDataHandler() });
@@ -514,7 +519,58 @@ namespace Glass.Sitecore.Mapper.Tests
         }
 
         #endregion
-       
+
+        #region Method - Move
+
+        [Test]
+        public void Move_MovesItemFromParent1ToParent2()
+        {
+            //Assign
+            string currentPath = "/sitecore/content/SitecoreService/Move/Parent1/Child";
+            string parent1Path = "/sitecore/content/SitecoreService/Move/Parent1";
+            string parent2Path = "/sitecore/content/SitecoreService/Move/Parent2";
+            string newPath = "/sitecore/content/SitecoreService/Move/Parent2/Child";
+
+
+            var parent1 = _sitecore.GetItem<EmptyTemplate1>(parent1Path);
+            var parent2 = _sitecore.GetItem<EmptyTemplate1>(parent2Path);
+            var child = _sitecore.GetItem<EmptyTemplate1>(currentPath);
+            var childNew = _sitecore.GetItem<EmptyTemplate1>(newPath);
+
+            //not item should exist at target
+            Assert.IsNull(childNew);
+
+            //Act
+            using (new SecurityDisabler())
+            {
+                try
+                {
+
+                    _sitecore.Move(child, parent2);
+                    childNew = _sitecore.GetItem<EmptyTemplate1>(newPath);
+
+                    //Assert
+                    Assert.IsNotNull(childNew);
+
+                }
+                finally
+                {
+                    Item item = _db.GetItem(newPath);
+                    Item oldParent = _db.GetItem(parent1Path);
+                    if (item != null)
+                        item.MoveTo(oldParent);
+
+                }
+
+            }
+
+
+
+        }
+
+
+        #endregion
+
     }
     namespace SitecoreServiceFixtureNS
     {
