@@ -88,6 +88,7 @@
     <Compile Include="ContextFixture.cs" />
     <Compile Include="Data\AbstractSitecoreFieldFixture.cs" />
     <Compile Include="Data\SitecoreFieldNameValueCollectionHandlerFixture.cs" />
+    <Compile Include="Data\SitecoreFieldRulesHandlerFixture.cs" />
     <Compile Include="Data\SitecoreNullableHandlerFixture.cs" />
     <Compile Include="Domain\LinkTemplate.cs" />
     <Compile Include="Data\QueryParameters\ItemDateNowParameterFixture.cs">

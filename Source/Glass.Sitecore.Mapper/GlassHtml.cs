@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
+using Glass.Sitecore.Mapper.RenderField;
 using Sitecore.Data;
 using System.Collections.Specialized;
 using Sitecore.Data.Items;
@@ -80,7 +81,20 @@ namespace Glass.Sitecore.Mapper
         /// <typeparam name="T">A class loaded by Glass.Sitecore.Mapper</typeparam>
         /// <param name="field">The field that should be made editable</param>
         /// <param name="target">The target object that contains the item to be edited</param>
-        /// <param name="parameters">Additional tag parameters, e.g. class=myCssClass </param>
+        /// <param name="parameters">Additional rendering parameters, e.g. ImageParameters</param>
+        /// <returns>HTML output to either render the editable controls or normal HTML</returns>
+        public string Editable<T>(T target, Expression<Func<T, object>> field, AbstractParameters parameters)
+        {
+            return MakeEditable<T>(field, null, target, _db, parameters);
+        }
+
+        /// <summary>
+        /// Makes the field editable using the Sitecore Page Editor. Using the specifed service to write data.
+        /// </summary>
+        /// <typeparam name="T">A class loaded by Glass.Sitecore.Mapper</typeparam>
+        /// <param name="field">The field that should be made editable</param>
+        /// <param name="target">The target object that contains the item to be edited</param>
+        /// <param name="parameters">Additional rendering parameters, e.g. class=myCssClass</param>
         /// <returns>HTML output to either render the editable controls or normal HTML</returns>
         public string Editable<T>(T target, Expression<Func<T, object>> field, string parameters)
         {
@@ -99,6 +113,20 @@ namespace Glass.Sitecore.Mapper
         public string Editable<T>(T target, Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput)
         {
             return MakeEditable<T>(field, standardOutput, target, _db);
+        }
+
+        /// <summary>
+        /// Makes the field editable using the Sitecore Page Editor. Using the specifed service to write data.
+        /// </summary>
+        /// <typeparam name="T">A class loaded by Glass.Sitecore.Mapper</typeparam>
+        /// <param name="field">The field that should be made editable</param>
+        /// <param name="target">The target object that contains the item to be edited</param>
+        /// <param name="standardOutput">The output to display when the Sitecore Page Editor is not being used</param>
+        /// <param name="parameters">Additional rendering parameters, e.g. ImageParameters</param>
+        /// <returns>HTML output to either render the editable controls or normal HTML</returns>
+        public string Editable<T>(T target, Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput, AbstractParameters parameters)
+        {
+            return MakeEditable<T>(field, null, target, _db, parameters);
         }
 
         /// <summary>
@@ -247,6 +275,11 @@ namespace Glass.Sitecore.Mapper
         private string MakeEditable<T>(Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput, T target, Database database)
         {
             return MakeEditable(field, standardOutput, target, database, "");
+        }
+
+        private string MakeEditable<T>(Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput, T target, Database database, AbstractParameters parameters)
+        {
+            return MakeEditable<T>(field, standardOutput, target, database, parameters.ToString());
         }
 
         private string MakeEditable<T>(Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput, T target, Database database, string parameters)
