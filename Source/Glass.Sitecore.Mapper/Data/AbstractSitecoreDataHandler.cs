@@ -58,7 +58,7 @@ namespace Glass.Sitecore.Mapper.Data
         /// <summary>
         /// The class property the handler is setting
         /// </summary>
-        internal PropertyInfo Property
+        public PropertyInfo Property
         {
             get;
             set;

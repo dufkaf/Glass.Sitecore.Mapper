@@ -35,7 +35,7 @@ namespace Glass.Sitecore.Mapper.Configuration
         public Guid TemplateId { get; set; }
         public Guid BranchId { get; set; }
 
-        internal IEnumerable<AbstractSitecoreDataHandler> DataHandlers { get; set; }
+        public  IEnumerable<AbstractSitecoreDataHandler> DataHandlers { get; set; }
         internal Dictionary<ConstructorInfo, Delegate> CreateObjectMethods { get; set; }
 
         public IEnumerable<SitecoreProperty> Properties { get; set; }
