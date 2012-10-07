@@ -863,7 +863,7 @@ namespace Glass.Sitecore.Mapper
 
 
             if (item == null)
-                throw new MapperException("Failed to create child with name {0} and parent {1}".Formatted(name, item.Paths.FullPath));
+                throw new MapperException("Failed to create child with name {0} and parent {1}".Formatted(name, pItem.Paths.FullPath));
 
             //if we have data save it to the item
             if (data != null)
