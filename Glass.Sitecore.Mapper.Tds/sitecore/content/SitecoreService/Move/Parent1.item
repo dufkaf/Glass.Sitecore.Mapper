@@ -1,26 +1,19 @@
 ----item----
 version: 1
-id: {5864308D-A91A-4E74-B8CA-7F27372CBB73}
+id: {9F5E664A-7CCE-4190-9F1C-E0E176FCEFA1}
 database: master
-path: /sitecore/content/Misc/GlassHtmlTest
-parent: {4F9777F7-FBF0-44EE-963A-3083BCB6992A}
-name: GlassHtmlTest
+path: /sitecore/content/SitecoreService/Move/Parent1
+parent: {AE239A2B-D342-4A86-9BB8-60E3C8DEEE5B}
+name: Parent1
 master: {00000000-0000-0000-0000-000000000000}
-template: {1D0EE1F5-21E0-4C5B-8095-EDE2AF3D3300}
-templatekey: BasicTemplate
+template: {D3B03F84-5DC4-4A8D-944E-F9FA9720547E}
+templatekey: EmptyTemplate1
 
 ----version----
 language: en
 version: 1
-revision: 556134fd-c769-49ca-88f2-56c45f234b2c
+revision: e08b8f2e-e18b-46ef-9c63-680d3ceaa42e
 
-----field----
-field: {9D57BA8A-604A-4F0A-BEDD-A346567075D3}
-name: SingleLineText
-key: singlelinetext
-content-length: 5
-
-Bacon
 ----field----
 field: {52807595-0F8F-4B20-8D2A-CB71D28C6103}
 name: __Owner
@@ -34,7 +27,7 @@ name: __Created
 key: __created
 content-length: 15
 
-20120423T205900
+20120909T204406
 ----field----
 field: {5DD74568-4D4B-44C1-B513-0AF5F4CDA34F}
 name: __Created by
@@ -48,14 +41,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-556134fd-c769-49ca-88f2-56c45f234b2c
+e08b8f2e-e18b-46ef-9c63-680d3ceaa42e
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 34
 
-20121004T144451:634849586911326298
+20120909T204406:634828202462317050
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by
