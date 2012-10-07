@@ -67,6 +67,7 @@ namespace Glass.Sitecore.Mapper.Dynamic
                 return true;
             }
 
+           
 
             switch (name)
             {

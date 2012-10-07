@@ -17,8 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Linq.Expressions;
+using Glass.Sitecore.Mapper.RenderField;
 using Sitecore.Data;
 using System.Collections.Specialized;
 using Sitecore.Data.Items;
@@ -80,7 +82,20 @@ namespace Glass.Sitecore.Mapper
         /// <typeparam name="T">A class loaded by Glass.Sitecore.Mapper</typeparam>
         /// <param name="field">The field that should be made editable</param>
         /// <param name="target">The target object that contains the item to be edited</param>
-        /// <param name="parameters">Additional tag parameters, e.g. class=myCssClass </param>
+        /// <param name="parameters">Additional rendering parameters, e.g. ImageParameters</param>
+        /// <returns>HTML output to either render the editable controls or normal HTML</returns>
+        public string Editable<T>(T target, Expression<Func<T, object>> field, AbstractParameters parameters)
+        {
+            return MakeEditable<T>(field, null, target, _db, parameters);
+        }
+
+        /// <summary>
+        /// Makes the field editable using the Sitecore Page Editor. Using the specifed service to write data.
+        /// </summary>
+        /// <typeparam name="T">A class loaded by Glass.Sitecore.Mapper</typeparam>
+        /// <param name="field">The field that should be made editable</param>
+        /// <param name="target">The target object that contains the item to be edited</param>
+        /// <param name="parameters">Additional rendering parameters, e.g. class=myCssClass</param>
         /// <returns>HTML output to either render the editable controls or normal HTML</returns>
         public string Editable<T>(T target, Expression<Func<T, object>> field, string parameters)
         {
@@ -99,6 +114,20 @@ namespace Glass.Sitecore.Mapper
         public string Editable<T>(T target, Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput)
         {
             return MakeEditable<T>(field, standardOutput, target, _db);
+        }
+
+        /// <summary>
+        /// Makes the field editable using the Sitecore Page Editor. Using the specifed service to write data.
+        /// </summary>
+        /// <typeparam name="T">A class loaded by Glass.Sitecore.Mapper</typeparam>
+        /// <param name="field">The field that should be made editable</param>
+        /// <param name="target">The target object that contains the item to be edited</param>
+        /// <param name="standardOutput">The output to display when the Sitecore Page Editor is not being used</param>
+        /// <param name="parameters">Additional rendering parameters, e.g. ImageParameters</param>
+        /// <returns>HTML output to either render the editable controls or normal HTML</returns>
+        public string Editable<T>(T target, Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput, AbstractParameters parameters)
+        {
+            return MakeEditable<T>(field, null, target, _db, parameters);
         }
 
         /// <summary>
@@ -249,6 +278,11 @@ namespace Glass.Sitecore.Mapper
             return MakeEditable(field, standardOutput, target, database, "");
         }
 
+        private string MakeEditable<T>(Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput, T target, Database database, AbstractParameters parameters)
+        {
+            return MakeEditable<T>(field, standardOutput, target, database, parameters.ToString());
+        }
+
         private string MakeEditable<T>(Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput, T target, Database database, string parameters)
         {
                 if (standardOutput == null || IsInEditingMode)
@@ -288,10 +322,36 @@ namespace Glass.Sitecore.Mapper
                     var site = global::Sitecore.Context.Site;
 
 
-                    //if the class a proxy then we have to get it's base type
-                    Type type = finalTarget is IProxyTargetAccessor ? finalTarget.GetType().BaseType : finalTarget.GetType();
-
                     InstanceContext context = Context.GetContext();
+
+
+                    //if the class a proxy then we have to get it's base type
+                    Type type;
+                    if (finalTarget is IProxyTargetAccessor)
+                    {
+                        //first try the base type
+                        type = finalTarget.GetType().BaseType;
+                        
+                        //if it doesn't contain the base type then we need to check the interfaces
+                        if(!context.Classes.ContainsKey(type)){
+                                     
+                            var interfaces = finalTarget.GetType().GetInterfaces();
+
+                            string name = finalTarget.GetType().Name;
+                            //be default castle will use the name of the class it is proxying for it's own name
+                            foreach (var inter in interfaces)
+                            {
+                                if (name.StartsWith(inter.Name))
+                                {
+                                    type = inter;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else
+                        type = finalTarget.GetType();
+
 
                     Guid id = Guid.Empty;
 
@@ -306,9 +366,35 @@ namespace Glass.Sitecore.Mapper
 
                     var scClass = context.GetSitecoreClass(type);
 
-                    var prop = memberExpression.Member;
+                    //lambda expression does not always return expected memberinfo when inheriting
+                    //c.f. http://stackoverflow.com/questions/6658669/lambda-expression-not-returning-expected-memberinfo
+                    var prop = type.GetProperty(memberExpression.Member.Name);
 
-                    if (prop == null) throw new MapperException("Page editting error. Could not find property {0} on type {1}".Formatted(memberExpression.Member.Name, type.FullName));
+                    //interfaces don't deal with inherited properties well
+                    if(prop == null && type.IsInterface)
+                    {
+                        Func<Type, PropertyInfo> interfaceCheck = null;
+                         interfaceCheck = (inter) =>
+                                {
+                                    var interfaces = inter.GetInterfaces();
+                                    var properties =
+                                        interfaces.Select(x => x.GetProperty(memberExpression.Member.Name)).Where(
+                                            x => x != null);
+                                    if (properties.Any()) return properties.First();
+                                    else
+                                        return interfaces.Select(x => interfaceCheck(x)).FirstOrDefault(x => x != null);
+                                };
+                        prop = interfaceCheck(type);
+                    }
+
+                    if (prop != null && prop.DeclaringType != prop.ReflectedType)
+                    {
+                        //properties mapped in data handlers are based on declaring type when field is inherited, make sure we match
+                        prop = prop.DeclaringType.GetProperty(prop.Name);
+                    }
+
+                    if (prop == null)
+                        throw new MapperException("Page editting error. Could not find property {0} on type {1}".Formatted(memberExpression.Member.Name, type.FullName));
 
                     var dataHandler = scClass.DataHandlers.FirstOrDefault(x => x.Property == prop);
                     if (dataHandler == null)

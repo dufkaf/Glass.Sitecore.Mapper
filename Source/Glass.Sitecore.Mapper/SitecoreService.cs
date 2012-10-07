@@ -863,7 +863,7 @@ namespace Glass.Sitecore.Mapper
 
 
             if (item == null)
-                throw new MapperException("Failed to create child with name {0} and parent {1}".Formatted(name, item.Paths.FullPath));
+                throw new MapperException("Failed to create child with name {0} and parent {1}".Formatted(name, pItem.Paths.FullPath));
 
             //if we have data save it to the item
             if (data != null)
@@ -1034,6 +1034,37 @@ namespace Glass.Sitecore.Mapper
             return (T)InstanceContext.ClassManager.CreateClass(this, isLazy, inferType, typeof(T), item, param1, param2, param3, param4);            
         }
 
+
+        public void Move<T, K>(T item, K newParent)
+        {
+            Guid itemId = Guid.Empty;
+            try
+            {
+                itemId = InstanceContext.GetClassId(typeof(T), item);
+            }
+            catch (SitecoreIdException ex)
+            {
+                throw new MapperException("Failed to get item ID", ex);
+            }
+
+            Guid newParentId = Guid.Empty;
+            try
+            {
+                newParentId = InstanceContext.GetClassId(typeof(K), newParent);
+            }
+            catch (SitecoreIdException ex)
+            {
+                throw new MapperException("Failed to get new parent ID", ex);
+            }
+
+            Item scItem = Database.GetItem(new ID(itemId));
+            Item scNewParent = Database.GetItem(new ID(newParentId));
+
+            scItem.MoveTo(scNewParent);
+
+
+
+        }
          
 
         #endregion

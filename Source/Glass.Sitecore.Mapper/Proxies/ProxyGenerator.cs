@@ -28,8 +28,8 @@ namespace Glass.Sitecore.Mapper.Proxies
 {
     public class ProxyGenerator
     {
-        private static readonly Castle.DynamicProxy.ProxyGenerator _generator = new Castle.DynamicProxy.ProxyGenerator();
-        private static readonly Castle.DynamicProxy.ProxyGenerationOptions _options = new Castle.DynamicProxy.ProxyGenerationOptions(new ProxyGeneratorHook());
+            private static readonly Castle.DynamicProxy.ProxyGenerator _generator = new Castle.DynamicProxy.ProxyGenerator();
+            private static readonly Castle.DynamicProxy.ProxyGenerationOptions _options = new Castle.DynamicProxy.ProxyGenerationOptions(new ProxyGeneratorHook());
 
        
         public static object CreateProxy(SitecoreClassConfig config,  ISitecoreService service, Item item, bool inferType){
