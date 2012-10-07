@@ -27,6 +27,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Glass.Sitecore.Mapper.XML</DocumentationFile>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -160,8 +161,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Data\QueryParameters\ItemEscapedPathParameter.cs" />
+    <Compile Include="Data\SitecoreFieldLongHandler.cs" />
     <Compile Include="Data\SitecoreFieldNameValueCollectionHandler.cs" />
     <Compile Include="Data\SitecoreFieldNullableHandler.cs" />
+    <Compile Include="Data\SitecoreFieldRulesHandler.cs" />
     <Compile Include="Data\SitecoreItemHandler.cs" />
     <Compile Include="Data\SitecoreLinkedHandler.cs" />
     <Compile Include="Data\QueryParameters\ItemIdNoBracketsParameter.cs" />
@@ -213,6 +216,10 @@
     <Compile Include="Enumerable.cs" />
     <Compile Include="ItemExtensions.cs" />
     <Compile Include="Pipelines\Response\GetModel.cs" />
+    <Compile Include="RenderField\AbstractParameters.cs" />
+    <Compile Include="RenderField\DateParameters.cs" />
+    <Compile Include="RenderField\ImageParameters.cs" />
+    <Compile Include="RenderField\LinkParameters.cs" />
     <Compile Include="Web\Mvc\GlassView.cs" />
     <Compile Include="NullLog.cs" />
     <Compile Include="PersistenceException.cs" />
