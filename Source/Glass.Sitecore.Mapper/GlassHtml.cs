@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Linq.Expressions;
 using Glass.Sitecore.Mapper.RenderField;
@@ -321,10 +322,36 @@ namespace Glass.Sitecore.Mapper
                     var site = global::Sitecore.Context.Site;
 
 
-                    //if the class a proxy then we have to get it's base type
-                    Type type = finalTarget is IProxyTargetAccessor ? finalTarget.GetType().BaseType : finalTarget.GetType();
-
                     InstanceContext context = Context.GetContext();
+
+
+                    //if the class a proxy then we have to get it's base type
+                    Type type;
+                    if (finalTarget is IProxyTargetAccessor)
+                    {
+                        //first try the base type
+                        type = finalTarget.GetType().BaseType;
+                        
+                        //if it doesn't contain the base type then we need to check the interfaces
+                        if(!context.Classes.ContainsKey(type)){
+                                     
+                            var interfaces = finalTarget.GetType().GetInterfaces();
+
+                            string name = finalTarget.GetType().Name;
+                            //be default castle will use the name of the class it is proxying for it's own name
+                            foreach (var inter in interfaces)
+                            {
+                                if (name.StartsWith(inter.Name))
+                                {
+                                    type = inter;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else
+                        type = finalTarget.GetType();
+
 
                     Guid id = Guid.Empty;
 
@@ -342,13 +369,32 @@ namespace Glass.Sitecore.Mapper
                     //lambda expression does not always return expected memberinfo when inheriting
                     //c.f. http://stackoverflow.com/questions/6658669/lambda-expression-not-returning-expected-memberinfo
                     var prop = type.GetProperty(memberExpression.Member.Name);
+
+                    //interfaces don't deal with inherited properties well
+                    if(prop == null && type.IsInterface)
+                    {
+                        Func<Type, PropertyInfo> interfaceCheck = null;
+                         interfaceCheck = (inter) =>
+                                {
+                                    var interfaces = inter.GetInterfaces();
+                                    var properties =
+                                        interfaces.Select(x => x.GetProperty(memberExpression.Member.Name)).Where(
+                                            x => x != null);
+                                    if (properties.Any()) return properties.First();
+                                    else
+                                        return interfaces.Select(x => interfaceCheck(x)).FirstOrDefault(x => x != null);
+                                };
+                        prop = interfaceCheck(type);
+                    }
+
                     if (prop != null && prop.DeclaringType != prop.ReflectedType)
                     {
                         //properties mapped in data handlers are based on declaring type when field is inherited, make sure we match
                         prop = prop.DeclaringType.GetProperty(prop.Name);
                     }
 
-                    if (prop == null) throw new MapperException("Page editting error. Could not find property {0} on type {1}".Formatted(memberExpression.Member.Name, type.FullName));
+                    if (prop == null)
+                        throw new MapperException("Page editting error. Could not find property {0} on type {1}".Formatted(memberExpression.Member.Name, type.FullName));
 
                     var dataHandler = scClass.DataHandlers.FirstOrDefault(x => x.Property == prop);
                     if (dataHandler == null)
