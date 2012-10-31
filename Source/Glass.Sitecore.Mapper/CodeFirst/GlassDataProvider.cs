@@ -308,9 +308,9 @@ namespace Glass.Sitecore.Mapper.CodeFirst
              return false;
          }
 
-         public static readonly object _setupLock = new object();
-         public static bool _setupComplete = false;
-         public static bool _setupProcessing = false;
+         public readonly object _setupLock = new object();
+         public bool _setupComplete = false;
+         public bool _setupProcessing = false;
 
          public void Setup(CallContext context)
          {
