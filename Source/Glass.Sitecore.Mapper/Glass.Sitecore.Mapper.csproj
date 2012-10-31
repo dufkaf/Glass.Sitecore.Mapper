@@ -66,7 +66,7 @@
     <Reference Include="Sitecore.Kernel" Condition="$(Configuration.Contains('preMVC'))">
       <HintPath>..\..\Depends\Sitecore.Kernel.dll</HintPath>
     </Reference>
-    <Reference Include="Sitecore.Kernel"  Condition="!$(Configuration.Contains('preMVC'))">
+    <Reference Include="Sitecore.Kernel" Condition="!$(Configuration.Contains('preMVC'))">
       <HintPath>..\..\Depends\66\Sitecore.Kernel.dll</HintPath>
     </Reference>
     <Reference Include="Sitecore.Mvc" Condition="!$(Configuration.Contains('preMVC'))">
@@ -96,6 +96,7 @@
     <Compile Include="CodeFirst\GlassDataProvider.cs" />
     <Compile Include="CodeFirst\SectionInfo.cs" />
     <Compile Include="Configuration\Attributes\AttributeConfigurationLoader.cs" />
+    <Compile Include="Configuration\Attributes\SitecoreFieldFieldAttribute.cs" />
     <Compile Include="Configuration\Attributes\SitecoreChildrenAttribute.cs" />
     <Compile Include="Configuration\Attributes\SitecoreClassAttribute.cs" />
     <Compile Include="Configuration\Attributes\SitecoreFieldAttribute.cs" />
