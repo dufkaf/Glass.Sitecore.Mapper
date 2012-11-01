@@ -1,6 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
+    <Framework Condition=" '$(Framework)' == '' ">NET40</Framework>
+    <preMVC Condition=" '$(preMVC)' == '' ">0</preMVC>
+  </PropertyGroup>
+  <PropertyGroup Condition="  '$(Framework)' == 'NET40' ">
+    <ExtraConstants>NET40;$(ExtraConstants)</ExtraConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Framework)' != 'NET40' AND '$(Framework)' != 'NET45'">
+    <preMVC>1</preMVC>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutputPath>bin\$(Configuration)\$(Framework)</OutputPath>
+    <OutputPath Condition=" '$(preMVC)' == '1' ">bin\$(Configuration)\$(Framework)-preMVC</OutputPath>
+    <ExtraConstants Condition=" '$(preMVC)' == '1' ">preMVC</ExtraConstants>
+  </PropertyGroup>
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -22,8 +37,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;$(ExtraConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Glass.Sitecore.Mapper.XML</DocumentationFile>
@@ -32,44 +46,24 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;$(ExtraConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Glass.Sitecore.Mapper.XML</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-preMVC|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;preMVC</DefineConstants>
-    <DocumentationFile>bin\Debug\Glass.Sitecore.Mapper.XML</DocumentationFile>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release-preMVC|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;preMVC</DefineConstants>
-    <DocumentationFile>bin\Release\Glass.Sitecore.Mapper.XML</DocumentationFile>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=3.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Castle.Core.3.1.0\lib\net40-client\Castle.Core.dll</HintPath>
+      <HintPath Condition=" '$(Framework)' == 'NET35'" >..\..\packages\Castle.Core.3.1.0\lib\net35\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Sitecore.Kernel" Condition="$(Configuration.Contains('preMVC'))">
+    <Reference Include="Sitecore.Kernel" Condition=" '$(preMVC)' == '1' ">
       <HintPath>..\..\Depends\Sitecore.Kernel.dll</HintPath>
     </Reference>
-    <Reference Include="Sitecore.Kernel" Condition="!$(Configuration.Contains('preMVC'))">
+    <Reference Include="Sitecore.Kernel" Condition=" '$(preMVC)' != '1' ">
       <HintPath>..\..\Depends\66\Sitecore.Kernel.dll</HintPath>
     </Reference>
-    <Reference Include="Sitecore.Mvc" Condition="!$(Configuration.Contains('preMVC'))">
+    <Reference Include="Sitecore.Mvc" Condition=" '$(preMVC)' != '1' ">
       <HintPath>..\..\Depends\66\Sitecore.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -221,10 +215,10 @@
     <Compile Include="Data\SitecoreQueryHandler.cs" />
     <Compile Include="DefaultTypeInferrer.cs" />
     <Compile Include="DisplayNameAttribute.cs" />
-    <Compile Include="Dynamic\Dy.cs" />
-    <Compile Include="Dynamic\DynamicCollection.cs" />
-    <Compile Include="Dynamic\DynamicField.cs" />
-    <Compile Include="Dynamic\DynamicItem.cs" />
+    <Compile Condition=" '$(Framework)' != 'NET35' " Include="Dynamic\Dy.cs" />
+    <Compile Condition=" '$(Framework)' != 'NET35' " Include="Dynamic\DynamicCollection.cs" />
+    <Compile Condition=" '$(Framework)' != 'NET35' " Include="Dynamic\DynamicField.cs" />
+    <Compile Condition=" '$(Framework)' != 'NET35' " Include="Dynamic\DynamicItem.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FakePropertyInfo.cs" />
     <Compile Include="FieldTypes\Blob.cs" />
@@ -239,7 +233,7 @@
     <Compile Include="ISitecoreService.cs" />
     <Compile Include="Enumerable.cs" />
     <Compile Include="ItemExtensions.cs" />
-    <Compile Include="Pipelines\Response\GetModel.cs" />
+    <Compile Include="Pipelines\Response\GetModel.cs" Condition=" '$(preMVC)' == '0' "/>
     <Compile Include="RenderField\AbstractParameters.cs" />
     <Compile Include="RenderField\DateParameters.cs" />
     <Compile Include="RenderField\ImageParameters.cs" />
@@ -266,10 +260,10 @@
     <Compile Include="Web\Ui\AbstractGlassUserControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Web\Ui\GlassDynamicPage.cs">
+    <Compile Condition=" '$(Framework)' != 'NET35' " Include="Web\Ui\GlassDynamicPage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Web\Ui\GlassDynamicUserControl.cs">
+    <Compile Condition=" '$(Framework)' != 'NET35' " Include="Web\Ui\GlassDynamicUserControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Web\Ui\GlassEditFrame.cs" />
@@ -331,4 +325,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterBuild" Condition=" '$(nestedbuild)' == '' ">
+    <MSBuild Condition=" '$(Framework)' != 'NET35'" Projects="$(MSBuildProjectFile)" Properties="Framework=NET35;preMVC=0;nestedbuild=1" RunEachTargetSeparately="true" />
+    <MSBuild Condition=" '$(Framework)' != 'NET35' AND '$(preMVC)' == '0'" Projects="$(MSBuildProjectFile)" Properties="Framework=NET40;preMVC=1;nestedbuild=1" RunEachTargetSeparately="true" />
+    <MSBuild Condition=" '$(Framework)' != 'NET35' AND '$(preMVC)' == '1'" Projects="$(MSBuildProjectFile)" Properties="Framework=NET40;preMVC=0;nestedbuild=1" RunEachTargetSeparately="true" />
+  </Target>
 </Project>
