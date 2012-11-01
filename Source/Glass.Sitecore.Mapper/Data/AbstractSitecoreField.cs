@@ -109,9 +109,18 @@ namespace Glass.Sitecore.Mapper.Data
             if (attr.FieldId.IsNotNullOrEmpty())
             {
                 Guid id = Guid.Empty;
-
-                if (Guid.TryParse(attr.FieldId, out id))
-                {
+#if NET40
+            if (Guid.TryParse(attr.FieldId, out id)) {
+#else
+            bool isGuid = false;
+            try {
+                  id = new Guid(attr.FieldId);
+                  isGuid = true;    
+            } catch (Exception ex) {
+                  isGuid = false;
+            }
+            if (isGuid) {
+#endif
                     FieldId = new ID(id);
                 }
                 else

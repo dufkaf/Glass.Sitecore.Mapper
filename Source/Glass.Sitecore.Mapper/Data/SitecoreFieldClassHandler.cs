@@ -46,8 +46,18 @@ namespace Glass.Sitecore.Mapper.Data
             if (fieldValue.IsNullOrEmpty()) return null;
 
             Guid id = Guid.Empty;
-            if (Guid.TryParse(fieldValue, out id))
-            {
+#if NET40
+            if (Guid.TryParse(fieldValue, out id)) {
+#else
+            bool isGuid = false;
+            try {
+                  id = new Guid(fieldValue);
+                  isGuid = true;    
+            } catch (Exception ex) {
+                  isGuid = false;
+            }
+            if (isGuid) {
+#endif
                 target = item.Database.GetItem(new ID(id), item.Language);
             }
             else

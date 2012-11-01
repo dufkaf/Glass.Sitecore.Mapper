@@ -31,7 +31,11 @@ namespace Glass.Sitecore.Mapper.Data
 
         public override object GetFieldValue(string fieldValue, Item item, ISitecoreService service)
         {
+#if NET40
             if (string.IsNullOrWhiteSpace(fieldValue))
+#else
+            if (string.IsNullOrEmpty(fieldValue))
+#endif
             {
                 return null;
             }
