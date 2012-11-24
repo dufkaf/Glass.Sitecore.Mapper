@@ -25,6 +25,7 @@ using Glass.Sitecore.Mapper.Configuration.Attributes;
 using Sitecore.Data;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using Sitecore.SecurityModel;
 
 namespace Glass.Sitecore.Mapper.Tests.Data
 {
@@ -85,21 +86,22 @@ namespace Glass.Sitecore.Mapper.Tests.Data
       
 
         [Test]
-        public void GetField_UsingFieldName_InvalidIdReturnsNull()
+        public void GetField_UsingFieldName_InvaliFieldNameReturnsNull()
         {
             //Assign
 
             AbstractSitecoreFieldFixtureNS.TestClass attr = new AbstractSitecoreFieldFixtureNS.TestClass();
             attr.FieldName = "no field here";
 
-            var item = _database.GetItem("/sitecore/content/Data/AbstractSitecoreField/Item1");
+           
+                var item = _database.GetItem("/sitecore/content/Data/AbstractSitecoreField/Item1");
 
-            //Act
-            var field = attr.GetField(item);
+                //Act
+                var field = attr.GetField(item);
 
-            //Assert
-            Assert.IsNull(field);
-
+                //Assert
+                Assert.IsNull(field);
+            
 
         }
 
@@ -113,12 +115,15 @@ namespace Glass.Sitecore.Mapper.Tests.Data
 
             var item = _database.GetItem("/sitecore/content/Data/AbstractSitecoreField/Item1");
 
-            //Act
-            var field = attr.GetField(item);
+             //have to use the security disable because the call item.Templates requires the role manager that  isn't available.
+            using (new SecurityDisabler())
+            {
+                //Act
+                var field = attr.GetField(item);
 
-            //Assert
-            Assert.IsNull(field);
-
+                //Assert
+                Assert.IsNull(field);
+            }
 
         }
 
