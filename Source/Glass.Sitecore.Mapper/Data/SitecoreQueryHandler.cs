@@ -148,6 +148,7 @@ namespace Glass.Sitecore.Mapper.Data
         private IEnumerable<Item> GetLanguageItems(IEnumerable<Item> foundItems, Language language)
         {
             if (foundItems == null) return Enumerable.Empty<Item>();
+
             return foundItems.Select(x=> GetLanguageItem(x, language)).Where(x => x != null);
         }
 
