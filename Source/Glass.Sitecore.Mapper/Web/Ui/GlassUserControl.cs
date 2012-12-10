@@ -47,6 +47,28 @@ namespace Glass.Sitecore.Mapper.Web.Ui
         }
 
         /// <summary>
+        /// Makes a field editable via the Page Editor. Use the Model property as the target item, e.g. model =&gt; model.Title where Title is field name.
+        /// </summary>
+        /// <param name="field">The field.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns></returns>
+        public string Editable(Expression<Func<T, object>> field, string parameters)
+        {
+            if (field == null) throw new NullReferenceException("No field set");
+            if (Model == null) throw new NullReferenceException("No model set");
+
+            try
+            {
+                var result = GlassHtml.Editable<T>(Model, field, parameters);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        /// <summary>
         /// Makes a field editable via the Page Editor. Use the Model property as the target item, e.g. model => model.Title where Title is field name.
         /// 
         /// </summary>
