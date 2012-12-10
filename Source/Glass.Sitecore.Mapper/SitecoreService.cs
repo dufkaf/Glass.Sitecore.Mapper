@@ -17,19 +17,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Glass.Sitecore.Mapper.Configuration;
 using Sitecore.Globalization;
-using Glass.Sitecore.Mapper.Proxies;
 using System.Collections;
 using Sitecore.Links;
 using Glass.Sitecore.Mapper.Configuration.Attributes;
-using System.Linq.Expressions;
-using System.Reflection.Emit;
-using System.Reflection;
-using Glass.Sitecore.Mapper.Dynamic;
 
 namespace Glass.Sitecore.Mapper
 {
@@ -47,14 +41,14 @@ namespace Glass.Sitecore.Mapper
             }
         }
 
-        Database _database;
+        global::Sitecore.Data.Database _database;
         LinkDatabase _linkDb;
 
         public SitecoreService(string database):this(global::Sitecore.Configuration.Factory.GetDatabase(database))
         {
            
         }
-        public SitecoreService(Database database)
+        public SitecoreService(global::Sitecore.Data.Database database)
         {
             InstanceContext = Context.GetContext();
             _linkDb = global::Sitecore.Configuration.Factory.GetLinkDatabase();

@@ -15,6 +15,7 @@
  
 */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,6 +36,7 @@ namespace Glass.Sitecore.Mapper.CodeFirst
             Title = title;
             IsShared = isShared;
             IsUnversioned = isUnversioned;
+            FieldFieldValues = new Dictionary<Guid, string>();
         }
 
         public ID FieldId { get; set; }
@@ -45,6 +47,7 @@ namespace Glass.Sitecore.Mapper.CodeFirst
         public string Title { get; set; }
         public bool IsShared { get; set; }
         public bool IsUnversioned { get; set; }
+        public Dictionary<Guid,string> FieldFieldValues { get; protected set; }
 
 
         public static string GetFieldType(SitecoreFieldType type)

@@ -162,8 +162,11 @@ namespace Glass.Sitecore.Mapper.CodeFirst
                 fields.Add(SourceFieldId, info.Source);
 
             fields.Add(TemplateFieldIDs.Shared, info.IsShared ? "1" : "0");
-
             fields.Add(TemplateFieldIDs.Unversioned, info.IsUnversioned ? "1" : "0");
+            foreach (var fieldFieldValue in info.FieldFieldValues)
+            {
+                fields.Add(ID.Parse(fieldFieldValue.Key), fieldFieldValue.Value);
+            }
         }
 
         #endregion
@@ -182,7 +185,7 @@ namespace Glass.Sitecore.Mapper.CodeFirst
 
             if (section != null)
             {
-               return GetChildIDsSection(itemDefinition, section);
+               return GetChildIDsSection(section);
             }
              
             return base.GetChildIDs(itemDefinition, context);
@@ -216,9 +219,8 @@ namespace Glass.Sitecore.Mapper.CodeFirst
             return fields;
         }
 
-        private IDList GetChildIDsSection(ItemDefinition itemDefinition, SectionInfo section)
+        private IDList GetChildIDsSection(SectionInfo section)
         {
-
             var cls = Classes.First(x => x.Value.TemplateId == section.TemplateId.Guid).Value;
 
             var fields = cls.Properties.Where(x=>x.Attribute is SitecoreFieldAttribute);
@@ -232,18 +234,36 @@ namespace Glass.Sitecore.Mapper.CodeFirst
                     continue;
 
                 var attr = field.Attribute as SitecoreFieldAttribute;
-                if (attr != null && attr.CodeFirst && attr.SectionName == itemDefinition.Name)
+                if (attr != null && attr.CodeFirst && attr.SectionName == section.Name)
                 {
 
-                    Guid guidId;
-                    if (Guid.TryParse(attr.FieldId, out guidId))
-                    {
-                        var record = FieldTable.FirstOrDefault(x => x.FieldId.Guid == guidId);
+                    Guid guidId = Guid.Empty;
+#if NET40
+            if (Guid.TryParse(attr.FieldId, out guidId)) {
+#else
+            bool isGuid = false;
+            try {
+                  guidId = new Guid(attr.FieldId);
+                  isGuid = true;    
+            } catch (Exception ex) {
+                  isGuid = false;
+            }
+            if (isGuid) {
+#endif
+                                                             var record = FieldTable.FirstOrDefault(x => x.FieldId.Guid == guidId);
 
                         if (record == null)
                         {
                             string fieldName = attr.FieldName.IsNullOrEmpty() ? field.Property.Name : attr.FieldName;
-                            record = new FieldInfo(new ID(guidId), itemDefinition.ID, fieldName, attr.FieldType, attr.FieldSource, attr.FieldTitle, attr.IsShared, attr.IsUnversioned);
+                            record = new FieldInfo(new ID(guidId), section.SectionId, fieldName, attr.FieldType, attr.FieldSource, attr.FieldTitle, attr.IsShared, attr.IsUnversioned);
+                            var fieldfieldInfoAttributes = field.Property.GetCustomAttributes(typeof(SitecoreFieldFieldValueAttribute), true);
+                            if (fieldfieldInfoAttributes != null && fieldfieldInfoAttributes.Any())
+                            {
+                                foreach (var ffv in fieldfieldInfoAttributes.Cast<SitecoreFieldFieldValueAttribute>())
+                                {
+                                    record.FieldFieldValues.Add(ffv.FieldId, ffv.FieldValue);
+                                }
+                            }
                         }
 
                         fieldIds.Add(record.FieldId);
@@ -298,9 +318,9 @@ namespace Glass.Sitecore.Mapper.CodeFirst
              return false;
          }
 
-         public static readonly object _setupLock = new object();
-         public static bool _setupComplete = false;
-         public static bool _setupProcessing = false;
+         public readonly object _setupLock = new object();
+         public bool _setupComplete = false;
+         public bool _setupProcessing = false;
 
          public void Setup(CallContext context)
          {
@@ -381,9 +401,14 @@ namespace Glass.Sitecore.Mapper.CodeFirst
                              templateItem.Editing.EndEdit();
                          }
                      }
-
+                     
                      BaseTemplateChecks(clsTemplate, provider, context, cls.Value);
 
+                     //initialize sections and children
+                     foreach (ID sectionId in this.GetChildIDsTemplate(cls.Value, clsTemplate))
+                     {
+                         this.GetChildIDsSection(SectionTable.First(s => s.SectionId == sectionId));
+                     }
                  }
 
                  RemoveDeletedClasses(glassFolder, provider, context);

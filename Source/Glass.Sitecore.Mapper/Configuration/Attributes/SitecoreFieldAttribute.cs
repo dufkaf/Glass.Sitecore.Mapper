@@ -45,8 +45,15 @@ namespace Glass.Sitecore.Mapper.Configuration.Attributes
             FieldName = fieldName;
         }
 
-
+#if NET40
         public SitecoreFieldAttribute(string fieldId, SitecoreFieldType fieldType, string sectionName = "Data",bool codeFirst = true)
+#else
+        public SitecoreFieldAttribute(string fieldId, SitecoreFieldType fieldType): this(fieldId, fieldType, "Data"){}
+        public SitecoreFieldAttribute(string fieldId, SitecoreFieldType fieldType, bool codeFirst):this(fieldId, fieldType, "Data", codeFirst){}
+        public SitecoreFieldAttribute(string fieldId, SitecoreFieldType fieldType, string sectionName):this(fieldId, fieldType, sectionName, true){}
+        public SitecoreFieldAttribute(string fieldId, SitecoreFieldType fieldType, string sectionName,bool codeFirst)
+#endif
+
         {
             FieldId = fieldId;
             SectionName = sectionName;
