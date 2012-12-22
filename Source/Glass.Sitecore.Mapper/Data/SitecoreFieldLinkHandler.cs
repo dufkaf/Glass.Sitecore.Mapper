@@ -61,11 +61,16 @@ namespace Glass.Sitecore.Mapper.Data
                     link.Type = LinkType.JavaScript;
                     break;
                 case "media":
-                    global::Sitecore.Data.Items.MediaItem media = new global::Sitecore.Data.Items.MediaItem(field.TargetItem);
-                    link.Url = global::Sitecore.Resources.Media.MediaManager.GetMediaUrl(media);
-                    link.Type = LinkType.Media;
-                    link.TargetId = field.TargetID.Guid;
-
+                    if (field.TargetItem == null) 
+                        link.Url = string.Empty;
+                    else
+                    {
+                        global::Sitecore.Data.Items.MediaItem media =
+                            new global::Sitecore.Data.Items.MediaItem(field.TargetItem);
+                        link.Url = global::Sitecore.Resources.Media.MediaManager.GetMediaUrl(media);
+                        link.Type = LinkType.Media;
+                        link.TargetId = field.TargetID.Guid;
+                    }
                     break;
                 case "internal":
                     if (field.TargetItem == null) link.Url = string.Empty;
