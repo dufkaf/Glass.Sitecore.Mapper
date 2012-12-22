@@ -71,7 +71,7 @@ namespace Glass.Sitecore.Mapper
         /// <param name="field">The field that should be made editable</param>
         /// <param name="target">The target object that contains the item to be edited</param>
         /// <returns>HTML output to either render the editable controls or normal HTML</returns>
-        public string Editable<T>(T target, Expression<Func<T, object>> field)
+        public virtual string Editable<T>(T target, Expression<Func<T, object>> field)
         {
             return MakeEditable<T>(field, null, target, _db);
         }
@@ -84,7 +84,7 @@ namespace Glass.Sitecore.Mapper
         /// <param name="target">The target object that contains the item to be edited</param>
         /// <param name="parameters">Additional rendering parameters, e.g. ImageParameters</param>
         /// <returns>HTML output to either render the editable controls or normal HTML</returns>
-        public string Editable<T>(T target, Expression<Func<T, object>> field, AbstractParameters parameters)
+        public virtual string Editable<T>(T target, Expression<Func<T, object>> field, AbstractParameters parameters)
         {
             return MakeEditable<T>(field, null, target, _db, parameters);
         }
@@ -97,7 +97,7 @@ namespace Glass.Sitecore.Mapper
         /// <param name="target">The target object that contains the item to be edited</param>
         /// <param name="parameters">Additional rendering parameters, e.g. class=myCssClass</param>
         /// <returns>HTML output to either render the editable controls or normal HTML</returns>
-        public string Editable<T>(T target, Expression<Func<T, object>> field, string parameters)
+        public virtual string Editable<T>(T target, Expression<Func<T, object>> field, string parameters)
         {
             return MakeEditable<T>(field, null, target, _db, parameters);
         }
@@ -111,7 +111,7 @@ namespace Glass.Sitecore.Mapper
         /// <param name="standardOutput">The output to display when the Sitecore Page Editor is not being used</param>
         /// <param name="service">The service that will be used to load and save data</param>
         /// <returns>HTML output to either render the editable controls or normal HTML</returns>
-        public string Editable<T>(T target, Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput)
+        public virtual string Editable<T>(T target, Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput)
         {
             return MakeEditable<T>(field, standardOutput, target, _db);
         }
@@ -125,7 +125,7 @@ namespace Glass.Sitecore.Mapper
         /// <param name="standardOutput">The output to display when the Sitecore Page Editor is not being used</param>
         /// <param name="parameters">Additional rendering parameters, e.g. ImageParameters</param>
         /// <returns>HTML output to either render the editable controls or normal HTML</returns>
-        public string Editable<T>(T target, Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput, AbstractParameters parameters)
+        public virtual string Editable<T>(T target, Expression<Func<T, object>> field, Expression<Func<T, string>> standardOutput, AbstractParameters parameters)
         {
             return MakeEditable<T>(field, null, target, _db, parameters);
         }
@@ -162,7 +162,7 @@ namespace Glass.Sitecore.Mapper
         /// </summary>
         /// <param name="image">The image to render</param>
         /// <returns>An img HTML element</returns>
-        public string RenderImage(FieldTypes.Image image)
+        public virtual string RenderImage(FieldTypes.Image image)
         {
             return RenderImage(image, null);
         }
@@ -173,7 +173,7 @@ namespace Glass.Sitecore.Mapper
         /// <param name="image">The image to render</param>
         /// <param name="attributes">Additional attributes to add. Do not include alt or src</param>
         /// <returns>An img HTML element</returns>
-        public string RenderImage(FieldTypes.Image image, NameValueCollection attributes)
+        public virtual string RenderImage(FieldTypes.Image image, NameValueCollection attributes)
         {
             if (image == null) return "";
 
@@ -199,7 +199,7 @@ namespace Glass.Sitecore.Mapper
         /// <param name="collection">The collection of attributes</param>
         /// <param name="name">The name of the attribute in the collection</param>
         /// <param name="defaultValue">The default value for the attribute</param>
-        public void AttributeCheck(NameValueCollection collection, string name, string defaultValue)
+        public virtual void AttributeCheck(NameValueCollection collection, string name, string defaultValue)
         {
             if (collection[name].IsNullOrEmpty() && !defaultValue.IsNullOrEmpty())
                 collection[name] = defaultValue;
@@ -210,7 +210,7 @@ namespace Glass.Sitecore.Mapper
         /// </summary>
         /// <param name="link">The link to render</param>
         /// <returns>An "a" HTML element </returns>
-        public string RenderLink(FieldTypes.Link link)
+        public virtual string RenderLink(FieldTypes.Link link)
         {
 
             return RenderLink(link, null, string.Empty);
@@ -223,7 +223,7 @@ namespace Glass.Sitecore.Mapper
         /// <param name="link">The link to render</param>
         /// <param name="attributes">Addtiional attributes to add. Do not include href or title</param>
         /// <returns>An "a" HTML element </returns>
-        public  string RenderLink(FieldTypes.Link link, NameValueCollection attributes)
+        public virtual string RenderLink(FieldTypes.Link link, NameValueCollection attributes)
         {
 
             return RenderLink(link, attributes, string.Empty);
@@ -237,7 +237,7 @@ namespace Glass.Sitecore.Mapper
         /// <param name="attributes">Addtiional attributes to add. Do not include href or title</param>
         /// <param name="contents">Content to go in the link instead of the standard text</param>
         /// <returns>An "a" HTML element </returns>
-        public string RenderLink(FieldTypes.Link link, NameValueCollection attributes, string contents)
+        public virtual string RenderLink(FieldTypes.Link link, NameValueCollection attributes, string contents)
         {
             if (link == null) return "";
             if (attributes == null) attributes = new NameValueCollection();
@@ -396,7 +396,8 @@ namespace Glass.Sitecore.Mapper
                     if (prop == null)
                         throw new MapperException("Page editting error. Could not find property {0} on type {1}".Formatted(memberExpression.Member.Name, type.FullName));
 
-                    var dataHandler = scClass.DataHandlers.FirstOrDefault(x => x.Property == prop);
+                    //ME - changed this to work by name because properties on interfaces do not show up as declared types.
+                    var dataHandler = scClass.DataHandlers.FirstOrDefault(x => x.Property.Name == prop.Name);
                     if (dataHandler == null)
                     {
                         throw new MapperException(
