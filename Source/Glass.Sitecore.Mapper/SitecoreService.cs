@@ -24,17 +24,19 @@ using Sitecore.Globalization;
 using System.Collections;
 using Sitecore.Links;
 using Glass.Sitecore.Mapper.Configuration.Attributes;
+using Sitecore.SecurityModel;
 
 namespace Glass.Sitecore.Mapper
 {
     public class SitecoreService : ISitecoreService
     {
-        public InstanceContext InstanceContext { get; private set;}
-        
+        public InstanceContext InstanceContext { get; private set; }
+
         /// <summary>
         /// The database used by the Sitecore service, used by some internal processed.
         /// </summary>
-        public Database Database{
+        public Database Database
+        {
             get
             {
                 return _database;
@@ -44,9 +46,10 @@ namespace Glass.Sitecore.Mapper
         global::Sitecore.Data.Database _database;
         LinkDatabase _linkDb;
 
-        public SitecoreService(string database):this(global::Sitecore.Configuration.Factory.GetDatabase(database))
+        public SitecoreService(string database)
+            : this(global::Sitecore.Configuration.Factory.GetDatabase(database))
         {
-           
+
         }
         public SitecoreService(global::Sitecore.Data.Database database)
         {
@@ -54,8 +57,8 @@ namespace Glass.Sitecore.Mapper
             _linkDb = global::Sitecore.Configuration.Factory.GetLinkDatabase();
             _database = database;
         }
-        
-       
+
+
 
         #region ISitecoreService Members
 
@@ -65,7 +68,7 @@ namespace Glass.Sitecore.Mapper
         /// <typeparam name="T">The type to return the items as</typeparam>
         /// <param name="query">The query to execute</param>
         /// <returns>Sitecore items as concrete classes of the specified type</returns>
-        public IEnumerable<T> Query<T>(string query) where T: class
+        public IEnumerable<T> Query<T>(string query) where T : class
         {
             return Query<T>(query, false);
         }
@@ -76,7 +79,7 @@ namespace Glass.Sitecore.Mapper
         /// <typeparam name="T">The type to return the items as</typeparam>
         /// <param name="query">The query to execute</param>
         /// <returns>Sitecore items as proxy classes of the specified type</returns>
-        public IEnumerable<T> Query<T>( string query,bool isLazy) where T : class
+        public IEnumerable<T> Query<T>(string query, bool isLazy) where T : class
         {
             Item[] items = _database.SelectItems(query);
             return CreateClasses(isLazy, typeof(T), () => { return items; }) as IEnumerable<T>;
@@ -88,10 +91,10 @@ namespace Glass.Sitecore.Mapper
         /// <typeparam name="T">The type to return the items as</typeparam>
         /// <param name="query">The query to execute</param>
         /// <returns>Sitecore item as the specified type</returns>
-        public T QuerySingle<T>(string query)  where T: class
-        {            
-            Item item = _database.SelectSingleItem(query);            
-            return CreateClass<T>(false, false,  item);
+        public T QuerySingle<T>(string query) where T : class
+        {
+            Item item = _database.SelectSingleItem(query);
+            return CreateClass<T>(false, false, item);
         }
 
         /// <summary>
@@ -100,7 +103,7 @@ namespace Glass.Sitecore.Mapper
         /// <typeparam name="T">The type to return the Sitecore item as</typeparam>
         /// <param name="path">The path to the Sitecore item</param>
         /// <returns>The Sitecore item as the specified type</returns>
-        public T GetItem<T>(string path)  where T: class
+        public T GetItem<T>(string path) where T : class
         {
             Item item = _database.GetItem(path);
             return CreateClass<T>(false, false, item);
@@ -181,7 +184,7 @@ namespace Glass.Sitecore.Mapper
         /// <param name="language">The language of the item to return</param>
         /// <param name="path">The path to the Sitecore item</param>
         /// <returns>The Sitecore item as the specified type</returns>
-        public T GetItem<T>(string path, Language language) where T:class
+        public T GetItem<T>(string path, Language language) where T : class
         {
             Item item = _database.GetItem(path, language);
             return CreateClass<T>(false, false, item);
@@ -355,9 +358,9 @@ namespace Glass.Sitecore.Mapper
         /// <typeparam name="T">The type to return the Sitecore item as</typeparam>
         /// <param name="id">The ID of the Sitecore item</param>
         /// <returns>The Sitecore item as the specified type</returns>
-        public T GetItem<T>(Guid id)  where T: class
+        public T GetItem<T>(Guid id) where T : class
         {
-            Item item = _database.GetItem(new  ID(id));
+            Item item = _database.GetItem(new ID(id));
             return CreateClass<T>(false, false, item);
         }
 
@@ -455,7 +458,7 @@ namespace Glass.Sitecore.Mapper
         {
             Item item = _database.GetItem(new ID(id), language);
             return CreateClass<T, K>(false, false, item, param1);
-        
+
         }
 
         /// <summary>
@@ -473,7 +476,7 @@ namespace Glass.Sitecore.Mapper
         {
             Item item = _database.GetItem(new ID(id), language);
             return CreateClass<T, K, L>(false, false, item, param1, param2);
-        
+
         }
 
         /// <summary>
@@ -493,7 +496,7 @@ namespace Glass.Sitecore.Mapper
         {
             Item item = _database.GetItem(new ID(id), language);
             return CreateClass<T, K, L, M>(false, false, item, param1, param2, param3);
-        
+
         }
 
         /// <summary>
@@ -608,19 +611,20 @@ namespace Glass.Sitecore.Mapper
         }
 
         /// <summary>
-        /// Saves a class back to Sitecore. 
+        /// Saves a class back to Sitecore.
         /// </summary>
         /// <typeparam name="T">The type being saved. The type must have a property with the SitecoreIdAttribute.</typeparam>
-        /// <param name="item">The class to save</param>
-        public void Save<T>(T target)  where T: class
+        /// <param name="target">The target.</param>
+        /// <param name="updateStatistics">if set to <c>true</c> [update statistics].</param>
+        public void Save<T>(T target, bool updateStatistics = true) where T : class
         {
             Item item = GetItemFromSitecore<T>(target);
-         
+
             item.Editing.BeginEdit();
-            WriteToItem<T>(target, item);            
-            item.Editing.EndEdit();
+            WriteToItem<T>(target, item);
+            item.Editing.EndEdit(updateStatistics, false);
             _linkDb.UpdateReferences(item);
-            
+
         }
 
         /// <summary>
@@ -629,7 +633,7 @@ namespace Glass.Sitecore.Mapper
         /// <typeparam name="T">The type being added. The type must have a property with the SitecoreIdAttribute.</typeparam>
         /// <param name="target">The class to add a version to</param>
         /// <returns></returns>
-        public T AddVersion<T>(T target) where T:class
+        public T AddVersion<T>(T target) where T : class
         {
             Item item = GetItemFromSitecore<T>(target);
 
@@ -675,14 +679,16 @@ namespace Glass.Sitecore.Mapper
         }
 
         /// <summary>
-        /// Creates a new Sitecore item. 
+        /// Creates a new Sitecore item.
         /// </summary>
         /// <typeparam name="T">The type of the new item to create. This type must have either a TemplateId or BranchId defined on the SitecoreClassAttribute or fluent equivalent</typeparam>
         /// <typeparam name="K">The type of the parent item</typeparam>
         /// <param name="parent">The parent of the new item to create. Must have the SitecoreIdAttribute or fluent equivalent</param>
         /// <param name="newItem">New item to create, must have the attribute SitecoreInfoAttribute of type SitecoreInfoType.Name or the fluent equivalent</param>
+        /// <param name="updateStatistics">if set to <c>true</c> [update statistics].</param>
         /// <returns></returns>
-        public T Create<T, K>(K parent, T newItem)
+        /// <exception cref="MapperException">You are trying to create an item on a class that doesn't have an empty ID value</exception>
+        public T Create<T, K>(K parent, T newItem, bool updateStatistics = true)
             where T : class
             where K : class
         {
@@ -723,12 +729,12 @@ namespace Glass.Sitecore.Mapper
 
             if (nameProperty == null)
                 throw new MapperException("Type {0} does not have a property with SitecoreInfoType.Name".Formatted(typeof(T).FullName));
-            
+
             string name = string.Empty;
-            
+
             try
             {
-                 name = nameProperty.Property.GetValue(newItem, null).ToString();
+                name = nameProperty.Property.GetValue(newItem, null).ToString();
             }
             catch
             {
@@ -744,13 +750,14 @@ namespace Glass.Sitecore.Mapper
 
             Item item = null;
 
-            if (templateId != Guid.Empty)
-            {
-                item = pItem.Add(name, new TemplateID(new ID(templateId)));
-            }
-            else if (branchId != Guid.Empty)
+            // Changed to use the branch id as default. This need to be done as we can't have an empty ID on the item
+            if (branchId != Guid.Empty)
             {
                 item = pItem.Add(name, new BranchId(new ID(branchId)));
+            }
+            else if (templateId != Guid.Empty)
+            {
+                item = pItem.Add(name, new TemplateID(new ID(templateId)));
             }
             else
             {
@@ -758,24 +765,24 @@ namespace Glass.Sitecore.Mapper
             }
 
             if (item == null) throw new MapperException("Failed to create item");
-           
+
             //write new data to the item
 
             item.Editing.BeginEdit();
             WriteToItem<T>(newItem, item);
-            item.Editing.EndEdit();
+            item.Editing.EndEdit(updateStatistics, false);
 
             //then read it back
             InstanceContext.ClassManager.ReadFromItem(this, newItem, item, scClass);
             return newItem;
-         //   return CreateClass<T>(false, false, item);
+            //   return CreateClass<T>(false, false, item);
 
         }
 
-       
 
 
-     
+
+
 
         #region OBSOLETE
 
@@ -804,22 +811,26 @@ namespace Glass.Sitecore.Mapper
         /// <param name="parent">The parent item. This item must have been load by Glass Sitecore Mapper</param>
         /// <param name="name">The name of the item</param>
         /// <param name="data">The data to pre-populate the item with</param>
+        /// <param name="updateStatistics">if set to <c>true</c> [update statistics].</param>
         /// <returns></returns>
+        /// <exception cref="MapperException">Failed to get parent ID</exception>
         [Obsolete("Use Create<T,K>(K parent, T newItem)")]
-        public T Create<T, K>(K parent, string name, T data)  where T: class where K: class
+        public T Create<T, K>(K parent, string name, T data, bool updateStatistics = true)
+            where T : class
+            where K : class
         {
 
             //check that the data is not null and if it has an ID check that it is empty
             if (data != null)
             {
-               
+
 
             }
-            
+
             Guid guid = Guid.Empty;
             try
             {
-                 guid = InstanceContext.GetClassId(typeof(K), parent);
+                guid = InstanceContext.GetClassId(typeof(K), parent);
             }
             catch (SitecoreIdException ex)
             {
@@ -827,7 +838,7 @@ namespace Glass.Sitecore.Mapper
             }
 
 
-            if (guid == Guid.Empty) 
+            if (guid == Guid.Empty)
                 throw new MapperException("Guid for parent is empty");
 
             Item pItem = _database.GetItem(new ID(guid));
@@ -835,7 +846,7 @@ namespace Glass.Sitecore.Mapper
                 throw new MapperException("Could not find parent item");
 
             SitecoreClassConfig scClass = InstanceContext.GetSitecoreClass(typeof(T));
-            
+
             Guid templateId = scClass.TemplateId;
             Guid branchId = scClass.BranchId;
 
@@ -857,14 +868,14 @@ namespace Glass.Sitecore.Mapper
 
 
             if (item == null)
-                throw new MapperException("Failed to create child with name {0} and parent {1}".Formatted(name, pItem.Paths.FullPath));
+                throw new MapperException("Failed to create child with name {0} and parent {1}".Formatted(name, item.Paths.FullPath));
 
             //if we have data save it to the item
             if (data != null)
             {
                 item.Editing.BeginEdit();
                 WriteToItem<T>(data, item);
-                item.Editing.EndEdit();
+                item.Editing.EndEdit(updateStatistics, false);
             }
             return CreateClass<T>(false, false, item);
 
@@ -877,7 +888,7 @@ namespace Glass.Sitecore.Mapper
         /// </summary>
         /// <typeparam name="T">The type being deleted. The type must have a property with the SitecoreIdAttribute.</typeparam>
         /// <param name="item">The class to delete</param>
-        public void Delete<T>(T item)  where T: class
+        public void Delete<T>(T item) where T : class
         {
             Guid guid = Guid.Empty;
             try
@@ -889,7 +900,7 @@ namespace Glass.Sitecore.Mapper
                 throw new MapperException("Failed to get item ID", ex);
             }
 
-            if (guid == Guid.Empty) 
+            if (guid == Guid.Empty)
                 throw new MapperException("Guid for item is empty");
 
             Item scItem = _database.GetItem(new ID(guid));
@@ -925,10 +936,10 @@ namespace Glass.Sitecore.Mapper
         public object CreateClass(bool isLazy, bool inferType, Type type, Item item)
         {
             //we have to add null to the list of parameters otherwise we get a stack overflow
-            return  InstanceContext.ClassManager.CreateClass(this, isLazy, inferType, type, item, null);
+            return InstanceContext.ClassManager.CreateClass(this, isLazy, inferType, type, item, null);
         }
 
-       
+
 
         /// <summary>
         /// Create a collection of classes from the specified type
@@ -939,7 +950,7 @@ namespace Glass.Sitecore.Mapper
         /// <returns>An enumerable of the items as the specified type</returns>
         public IEnumerable CreateClasses(bool isLazy, Type type, Func<IEnumerable<Item>> getItems)
         {
-            return CreateClasses(isLazy, false, type, getItems);                
+            return CreateClasses(isLazy, false, type, getItems);
         }
 
         /// <summary>
@@ -967,7 +978,7 @@ namespace Glass.Sitecore.Mapper
         /// <returns>The item as the specified type</returns>
         public T CreateClass<T, K>(bool isLazy, bool inferType, Item item, K param1)
         {
-            return (T)InstanceContext.ClassManager.CreateClass(this,isLazy, inferType, typeof(T), item, param1);
+            return (T)InstanceContext.ClassManager.CreateClass(this, isLazy, inferType, typeof(T), item, param1);
 
         }
 
@@ -983,8 +994,8 @@ namespace Glass.Sitecore.Mapper
         /// <param name="param1">The value of the first parameter of the constructor</param>       
         /// <param name="param2">The value of the second parameter of the constructor</param>
         /// <returns>The item as the specified type</returns>
-        public T CreateClass<T,K,L>(bool isLazy, bool inferType, Item item, K param1, L param2)
-        {          
+        public T CreateClass<T, K, L>(bool isLazy, bool inferType, Item item, K param1, L param2)
+        {
             return (T)InstanceContext.ClassManager.CreateClass(this, isLazy, inferType, typeof(T), item, param1, param2);
         }
 
@@ -1025,7 +1036,7 @@ namespace Glass.Sitecore.Mapper
         /// <returns>The item as the specified type</returns>
         public T CreateClass<T, K, L, M, N>(bool isLazy, bool inferType, Item item, K param1, L param2, M param3, N param4)
         {
-            return (T)InstanceContext.ClassManager.CreateClass(this, isLazy, inferType, typeof(T), item, param1, param2, param3, param4);            
+            return (T)InstanceContext.ClassManager.CreateClass(this, isLazy, inferType, typeof(T), item, param1, param2, param3, param4);
         }
 
 
@@ -1059,13 +1070,12 @@ namespace Glass.Sitecore.Mapper
 
 
         }
-         
 
         #endregion
 
         #region Private Methods
 
-       
+
 
         public void WriteToItem<T>(T target, Item item)
         {
@@ -1073,7 +1083,6 @@ namespace Glass.Sitecore.Mapper
 
             foreach (var handler in scClass.DataHandlers)
             {
-
                 if (handler.CanSetValue)
                 {
                     handler.ReadProperty(target, item, this);
@@ -1081,11 +1090,11 @@ namespace Glass.Sitecore.Mapper
             }
         }
 
- 
+
 
         #endregion
 
-       
+
 
 
     }

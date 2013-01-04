@@ -24,15 +24,16 @@ namespace Glass.Sitecore.Mapper.CodeFirst
 {
     public class SectionInfo
     {
-        public SectionInfo(string name, ID sectionId, ID templateId)
+        public SectionInfo(string name, ID sectionId, ID templateId, int sectionSortOrder)
         {
             Name = name;
             SectionId = sectionId;
             TemplateId = templateId;
-          
+            SectionSortOrder = sectionSortOrder;
         }
         public string Name { get; set; }
         public ID SectionId { get; set; }
         public ID TemplateId { get; set; }
+        public int SectionSortOrder { get; set; }
     }
 }

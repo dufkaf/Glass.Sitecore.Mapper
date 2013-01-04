@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using Glass.Sitecore.Mapper.FieldTypes;
 using Sitecore.Data.Fields;
 using Sitecore.Links;
@@ -41,7 +42,14 @@ namespace Glass.Sitecore.Mapper.Data
             FileField field = new FileField(itemField);
             File file = new File();
             if (field.MediaItem != null)
-                file.Src = MediaManager.GetMediaUrl(field.MediaItem);
+            {
+                MediaItem mediaItem = new MediaItem(field.MediaItem);
+
+                file.Src = HttpUtility.UrlPathEncode(MediaManager.GetMediaUrl(field.MediaItem));
+                file.Size = mediaItem.Size;
+                file.Title = mediaItem.Title;
+                file.Extension = mediaItem.Extension;
+            }
             file.Id = field.MediaID.Guid;
 
             return file;

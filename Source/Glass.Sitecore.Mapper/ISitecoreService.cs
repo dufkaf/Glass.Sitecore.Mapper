@@ -456,11 +456,12 @@ namespace Glass.Sitecore.Mapper
         T GetItem<T, K, L, M, N>(Guid id, Language language, global::Sitecore.Data.Version version, K param1, L param2, M param3, N param4) where T : class;
 
         /// <summary>
-        /// Saves a class back to Sitecore. 
+        /// Saves a class back to Sitecore.
         /// </summary>
         /// <typeparam name="T">The type being saved. The type must have a property with the SitecoreIdAttribute.</typeparam>
         /// <param name="item">The class to save</param>
-        void Save<T>(T item) where T : class;
+        /// <param name="updateStatistics">if set to <c>true</c> [update statistics].</param>
+        void Save<T>(T item, bool updateStatistics = true) where T : class;
 
         /// <summary>
         /// Adds a version of the item
@@ -492,22 +493,24 @@ namespace Glass.Sitecore.Mapper
         /// <param name="parent">The parent item. This item must have been load by Glass Sitecore Mapper</param>
         /// <param name="name">The name of the item</param>
         /// <param name="data">The data to pre-populate the item with</param>
+        /// <param name="updateStatistics">if set to <c>true</c> [update statistics].</param>
         /// <returns></returns>
         [Obsolete("Use Create<T,K>(K parent, T newItem)")]
-        T Create<T, K>(K parent, string name, T data)
+        T Create<T, K>(K parent, string name, T data, bool updateStatistics = true)
             where T : class
             where K : class;
 
 
         /// <summary>
-        /// Creates a new Sitecore item. 
+        /// Creates a new Sitecore item.
         /// </summary>
         /// <typeparam name="T">The type of the new item to create. This type must have either a TemplateId or BranchId defined on the SitecoreClassAttribute or fluent equivalent</typeparam>
         /// <typeparam name="K">The type of the parent item</typeparam>
         /// <param name="parent">The parent of the new item to create. Must have the SitecoreIdAttribute or fluent equivalent</param>
         /// <param name="newItem">New item to create, must have the attribute SitecoreInfoAttribute of type SitecoreInfoType.Name or the fluent equivalent</param>
+        /// <param name="updateStatistics">if set to <c>true</c> [update statistics].</param>
         /// <returns></returns>
-        T Create<T, K>(K parent, T newItem)
+        T Create<T, K>(K parent, T newItem, bool updateStatistics = true)
             where T : class
             where K : class;
 

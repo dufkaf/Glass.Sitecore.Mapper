@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using Glass.Sitecore.Mapper.FieldTypes;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
@@ -56,7 +57,7 @@ namespace Glass.Sitecore.Mapper.Data
             img.HSpace = hSpace;
             img.MediaId = scImg.MediaID.Guid;
             if(scImg.MediaItem != null)
-                img.Src = MediaManager.GetMediaUrl(scImg.MediaItem);
+                img.Src = HttpUtility.UrlPathEncode(MediaManager.GetMediaUrl(scImg.MediaItem));
             img.VSpace = vSpace;
             img.Width = width;
 

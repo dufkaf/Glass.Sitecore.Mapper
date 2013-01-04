@@ -25,5 +25,8 @@ namespace Glass.Sitecore.Mapper.FieldTypes
     {
         public string Src { get; internal set; }
         public Guid Id { get; set; }
+        public long Size { get; internal set; }
+        public string Title { get; internal set; }
+        public string Extension { get; internal set; }
     }
 }

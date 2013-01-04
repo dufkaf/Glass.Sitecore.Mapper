@@ -50,7 +50,9 @@ namespace Glass.Sitecore.Mapper.Data
             {
                 field =  item.Fields[FieldName];
             }
+
             else if(item.Fields.Contains(FieldId) || item.Template.GetField(FieldId) != null)
+
             {
                 field = item.Fields[FieldId];
             }

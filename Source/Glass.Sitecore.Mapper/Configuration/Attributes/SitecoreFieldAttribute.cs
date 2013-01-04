@@ -43,6 +43,8 @@ namespace Glass.Sitecore.Mapper.Configuration.Attributes
             : this()
         {
             FieldName = fieldName;
+            FieldSortOrder = -1;
+            SectionSortOrder = -1;
         }
 
 #if NET40
@@ -59,6 +61,8 @@ namespace Glass.Sitecore.Mapper.Configuration.Attributes
             SectionName = sectionName;
             CodeFirst = codeFirst;
             FieldType = fieldType;
+            FieldSortOrder = -1;
+            SectionSortOrder = -1;
         }
 
         public SitecoreFieldType FieldType { get; set; }
@@ -112,5 +116,30 @@ namespace Glass.Sitecore.Mapper.Configuration.Attributes
         /// Sets the field as unversioned if using Code First
         /// </summary>
         public bool IsUnversioned { get; set; }
+
+        /// <summary>
+        /// Overrides the field sort order if using Code First
+        /// </summary>
+        public int FieldSortOrder { get; set; }
+
+        /// <summary>
+        /// Overrides the section sort order if using Code First
+        /// </summary>
+        public int SectionSortOrder { get; set; }
+
+        /// <summary>
+        /// Overrides the field validation regular expression if using Code First
+        /// </summary>
+        public string ValidationRegularExpression { get; set; }
+
+        /// <summary>
+        /// Overrides the field validation error text if using Code First
+        /// </summary>
+        public string ValidationErrorText { get; set; }
+
+        /// <summary>
+        /// Sets the field as required if using Code First
+        /// </summary>
+        public bool IsRequired { get; set; }
     }
 }

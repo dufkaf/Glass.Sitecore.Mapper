@@ -72,7 +72,7 @@
       <HintPath>..\..\Depends\66\Sitecore.Kernel.dll</HintPath>
     </Reference>
     <Reference Include="Sitecore.Mvc">
-      <HintPath>..\..\Depends\66\Sitecore.Mvc.dll</HintPath>
+      <HintPath>..\..\Depends\Sitecore.Mvc.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
