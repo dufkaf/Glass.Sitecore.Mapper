@@ -24,17 +24,19 @@ using Glass.Sitecore.Mapper.Proxies;
 
 namespace Glass.Sitecore.Mapper
 {
-    public class Enumerable<T> : IEnumerable<T> where T:class
+    public class Enumerable<T> : IEnumerable<T> where T : class
     {
-        Func<IEnumerable<Item>> _getItems;
-        ISitecoreService _service;
-        
-        
-        IList<T> _itemList = null; 
+        private Func<IEnumerable<Item>> _getItems;
+        private ISitecoreService _service;
 
-        bool _loaded = false;
-        bool _isLazy = true;
-        bool _inferType = false;
+
+        //IList<T> _itemList = null;
+        //bool _loaded = false;
+
+        private Lazy<IList<T>> _lazyItemList;
+
+        private bool _isLazy = true;
+        private bool _inferType = false;
 
         public Enumerable(Func<IEnumerable<Item>> getItems, ISitecoreService service, bool isLazy, bool inferType)
         {
@@ -42,13 +44,16 @@ namespace Glass.Sitecore.Mapper
             _service = service;
             _isLazy = isLazy;
             _inferType = inferType;
+            _lazyItemList = new Lazy<IList<T>>(LoadItems);
         }
 
-        private void LoadItems()
+
+
+        private IList<T> LoadItems()
         {
 
-            Type type = typeof(T);
-            _itemList = Utility.CreateGenericType(typeof(List<>), new Type[] { type }) as IList<T>;
+            Type type = typeof (T);
+            var itemList = Utility.CreateGenericType(typeof (List<>), new Type[] {type}) as IList<T>;
 
             if (_getItems == null) throw new NullReferenceException("No function to return items");
 
@@ -59,20 +64,23 @@ namespace Glass.Sitecore.Mapper
                 foreach (Item item in items.Where(x => x != null))
                 {
                     var result = _service.CreateClass<T>(_isLazy, _inferType, item);
-                    _itemList.Add(result);
+                    itemList.Add(result);
                 }
             }
 
-            _loaded = true;
+            return itemList;
         }
 
         #region IEnumerable<T> Members
 
         public IEnumerator<T> GetEnumerator()
         {
-            if (!_loaded) LoadItems();
-            return _itemList.GetEnumerator();
+            //if (!_loaded) LoadItems();
+            //return _itemList.GetEnumerator();
+            return _lazyItemList.Value.GetEnumerator();
         }
+
+
 
         #endregion
 
