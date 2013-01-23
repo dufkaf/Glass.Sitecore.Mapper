@@ -52,6 +52,7 @@ namespace Glass.Sitecore.Mapper.Data
         public static object GetItemInfo(SitecoreInfoType infoType, Item item, UrlOptions urlOptions)
         {
             if (urlOptions == null) urlOptions = new UrlOptions();
+            urlOptions.Language = item.Language;
 
             switch (infoType)
             {
