@@ -394,9 +394,12 @@ namespace Glass.Sitecore.Mapper.CodeFirst
                              ItemDefinition found = null;
                              foreach (ID child in children)
                              {
-                                 var childDef = provider.GetItemDefinition(child, context);
-                                 if (childDef.Name == ns)
-                                     found = childDef;
+                                     if (!ID.IsNullOrEmpty(child))
+                                     {
+										 var childDef = provider.GetItemDefinition(child, context);
+										 if (childDef.Name == ns)
+											 found = childDef;
+                                     }
                              }
 
                              if (found == null)
