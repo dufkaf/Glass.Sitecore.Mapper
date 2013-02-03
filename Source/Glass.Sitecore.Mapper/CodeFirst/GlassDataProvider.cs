@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  
-*/
+*/ 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,7 +30,7 @@ using Sitecore.Caching;
 using Glass.Sitecore.Mapper.Configuration;
 using Glass.Sitecore.Mapper.Configuration.Attributes;
 using Sitecore.SecurityModel;
-
+ 
 namespace Glass.Sitecore.Mapper.CodeFirst
 {
     public class GlassDataProvider : DataProvider
