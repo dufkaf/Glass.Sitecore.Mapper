@@ -317,7 +317,7 @@ namespace Glass.Sitecore.Mapper
                     //this contains the expression that will evaluate to the object containing the property
                     var objectExpression =  memberExpression.Expression;
 
-                    var finalTarget = Expression.Lambda(objectExpression, field.Parameters).Compile().DynamicInvoke(target);
+                    var finalTarget = Expression.Lambda(objectExpression, field.Parameters.ToArray()).Compile().DynamicInvoke(target);
 
                     var site = global::Sitecore.Context.Site;
 

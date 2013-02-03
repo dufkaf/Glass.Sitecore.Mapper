@@ -41,6 +41,24 @@
     <SitecoreAccessGuid>e1be7d57-b1ed-4985-aae5-d329d15a88de</SitecoreAccessGuid>
     <InstallSitecoreConnector>True</InstallSitecoreConnector>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug-preMVC' ">
+    <DebugSymbols>true</DebugSymbols>
+    <RecursiveDeployAction>Ignore</RecursiveDeployAction>
+    <SitecoreDeployFolder>F:\Sitecore\Glass\Website\</SitecoreDeployFolder>
+    <SitecoreWebUrl>http://london.glassdemo/</SitecoreWebUrl>
+    <SitecoreAccessGuid>2b8e4682-cead-46d6-a85e-b12efc0e1f1f</SitecoreAccessGuid>
+    <InstallSitecoreConnector>True</InstallSitecoreConnector>
+    <OutputPath>bin\Debug-preMVC\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release-preMVC' ">
+    <DebugSymbols>false</DebugSymbols>
+    <RecursiveDeployAction>Ignore</RecursiveDeployAction>
+    <SitecoreDeployFolder>F:\Glass\Glass.Sitecore.Demo\Source\Glass.Demo.Website</SitecoreDeployFolder>
+    <SitecoreWebUrl>http://glassdemo</SitecoreWebUrl>
+    <SitecoreAccessGuid>e1be7d57-b1ed-4985-aae5-d329d15a88de</SitecoreAccessGuid>
+    <InstallSitecoreConnector>True</InstallSitecoreConnector>
+    <OutputPath>bin\Release-preMVC\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <AssemblyAttributes Include="AssemblyFileVersion">
       <Value>$(AssemblyFileVersion)</Value>
@@ -485,7 +503,7 @@
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
-	 <SitecoreItem Include="sitecore\content\Misc\GlassHtmlTest.item">
+    <SitecoreItem Include="sitecore\content\Misc\GlassHtmlTest.item">
       <Icon>/temp/IconCache/Applications/32x32/Document.png</Icon>
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>

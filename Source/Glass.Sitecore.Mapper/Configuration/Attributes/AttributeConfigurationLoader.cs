@@ -29,15 +29,6 @@ namespace Glass.Sitecore.Mapper.Configuration.Attributes
 
         IEnumerable<string> _namespaces;
 
-        bool _loadAll = false;
-
-        //TODO: get this working. Problem loading types.
-        //public AttributeConfigurationLoader()
-        //{
-        //    _loadAll = true;
-            
-        //}
-
         /// <summary>
         /// Load types from certian namespaces only or specify just assemblies
         /// </summary>
@@ -54,13 +45,12 @@ namespace Glass.Sitecore.Mapper.Configuration.Attributes
         {
             IDictionary<Type, SitecoreClassConfig> classes;
 
-            if (_loadAll)
+            if (_namespaces == null || !_namespaces.Any())
             {
                 classes = LoadAllClasses();
             }
             else
             {
-                if (_namespaces == null || _namespaces.Count() == 0) return new List<SitecoreClassConfig>();
                 classes = LoadNamespaceClasses();
             }
 
@@ -248,15 +238,13 @@ namespace Glass.Sitecore.Mapper.Configuration.Attributes
                     }).Where(x => x != null).ToList();
 
                 }
-                catch (ReflectionTypeLoadException ex)
+                catch (Exception ex)
                 {
-                    throw new MapperException("Failed to load types {0}".Formatted(ex.LoaderExceptions.First().Message), ex);
+                    //throw new MapperException("Failed to load types {0}".Formatted(ex.LoaderExceptions.First().Message), ex);
+                    //don't mind assemblies that contain dynamic types...
                 }
             }
-            else
-            {
-                return new List<SitecoreClassConfig>();
-            }
+            return new List<SitecoreClassConfig>();
         }
 
 

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#if !preMVC
+using System;
 using Sitecore.Mvc.Pipelines.Response.GetModel;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Extensions;
@@ -48,3 +46,4 @@ namespace Glass.Sitecore.Mapper.Pipelines.Response
         }
     }
 }
+#endif

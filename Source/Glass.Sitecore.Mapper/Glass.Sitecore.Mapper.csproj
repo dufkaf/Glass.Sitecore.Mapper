@@ -1,6 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
+    <Framework Condition=" '$(Framework)' == '' ">NET40</Framework>
+    <preMVC Condition=" '$(preMVC)' == '' ">0</preMVC>
+    <preMVC Condition=" '$(Framework)' == 'NET35' ">1</preMVC>
+    <ExtraConstants>$(Framework)</ExtraConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutputPath>bin\$(Configuration)\$(Framework)</OutputPath>
+    <OutputPath Condition=" '$(preMVC)' == '1' ">bin\$(Configuration)\$(Framework)-preMVC</OutputPath>
+    <ExtraConstants Condition=" '$(preMVC)' == '1' ">preMVC;$(ExtraConstants)</ExtraConstants>
+  </PropertyGroup>
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -10,7 +21,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Glass.Sitecore.Mapper</RootNamespace>
     <AssemblyName>Glass.Sitecore.Mapper</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == ''">v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -22,8 +33,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;$(ExtraConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Glass.Sitecore.Mapper.XML</DocumentationFile>
@@ -32,32 +42,50 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;$(ExtraConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Glass.Sitecore.Mapper.XML</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(Framework)' == 'NET35' " >
+    <Reference Include="Castle.Core, Version=3.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath >..\..\packages\Castle.Core.3.1.0\lib\net35\Castle.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Framework)' != 'NET35' " >
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="Castle.Core, Version=3.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Castle.Core.3.1.0\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(preMVC)' == '1' " >
     <Reference Include="Sitecore.Kernel">
       <HintPath>..\..\Depends\Sitecore.Kernel.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(preMVC)' != '1' " >
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Sitecore.Kernel">
+      <HintPath>..\..\Depends\66\Sitecore.Kernel.dll</HintPath>
     </Reference>
     <Reference Include="Sitecore.Mvc">
       <HintPath>..\..\Depends\66\Sitecore.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -73,6 +101,7 @@
     <Compile Include="CodeFirst\GlassDataProvider.cs" />
     <Compile Include="CodeFirst\SectionInfo.cs" />
     <Compile Include="Configuration\Attributes\AttributeConfigurationLoader.cs" />
+    <Compile Include="Configuration\Attributes\SitecoreFieldFieldAttribute.cs" />
     <Compile Include="Configuration\Attributes\SitecoreChildrenAttribute.cs" />
     <Compile Include="Configuration\Attributes\SitecoreClassAttribute.cs" />
     <Compile Include="Configuration\Attributes\SitecoreFieldAttribute.cs" />
@@ -197,10 +226,6 @@
     <Compile Include="Data\SitecoreQueryHandler.cs" />
     <Compile Include="DefaultTypeInferrer.cs" />
     <Compile Include="DisplayNameAttribute.cs" />
-    <Compile Include="Dynamic\Dy.cs" />
-    <Compile Include="Dynamic\DynamicCollection.cs" />
-    <Compile Include="Dynamic\DynamicField.cs" />
-    <Compile Include="Dynamic\DynamicItem.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FakePropertyInfo.cs" />
     <Compile Include="FieldTypes\Blob.cs" />
@@ -215,12 +240,10 @@
     <Compile Include="ISitecoreService.cs" />
     <Compile Include="Enumerable.cs" />
     <Compile Include="ItemExtensions.cs" />
-    <Compile Include="Pipelines\Response\GetModel.cs" />
     <Compile Include="RenderField\AbstractParameters.cs" />
     <Compile Include="RenderField\DateParameters.cs" />
     <Compile Include="RenderField\ImageParameters.cs" />
     <Compile Include="RenderField\LinkParameters.cs" />
-    <Compile Include="Web\Mvc\GlassView.cs" />
     <Compile Include="NullLog.cs" />
     <Compile Include="PersistenceException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -234,18 +257,10 @@
     <Compile Include="SitecoreIdException.cs" />
     <Compile Include="SitecoreService.cs" />
     <Compile Include="Utility.cs" />
-    <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
-    <Compile Include="Web\Mvc\MvcEditFrame.cs" />
     <Compile Include="Web\Ui\AbstractGlassPage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Web\Ui\AbstractGlassUserControl.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Web\Ui\GlassDynamicPage.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Web\Ui\GlassDynamicUserControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Web\Ui\GlassEditFrame.cs" />
@@ -253,6 +268,24 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Web\Ui\GlassUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(preMVC)' != '1' ">
+    <Compile Include="Pipelines\Response\GetModel.cs" />
+    <Compile Include="Web\Mvc\GlassView.cs" />
+    <Compile Include="Web\Mvc\HtmlHelperExtensions.cs" />
+    <Compile Include="Web\Mvc\MvcEditFrame.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Framework)' != 'NET35' ">
+    <Compile Include="Dynamic\Dy.cs" />
+    <Compile Include="Dynamic\DynamicCollection.cs" />
+    <Compile Include="Dynamic\DynamicField.cs" />
+    <Compile Include="Dynamic\DynamicItem.cs" />
+    <Compile Include="Web\Ui\GlassDynamicPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Web\Ui\GlassDynamicUserControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
   </ItemGroup>
@@ -307,4 +340,16 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="BeforeBuild">
+    <Message Text="ExtraConstants: $(ExtraConstants)" Importance="high" />
+    <Message Text="preMVC: $(preMVC)" Importance="high" />
+    <Message Text="Framework: $(Framework)" Importance="high" />
+    <Message Text="TargetFrameworkVersion: $(TargetFrameworkVersion)" Importance="high" />
+  </Target>
+  <Target Name="AfterBuild" Condition=" '$(nestedbuild)' == '' ">
+    <Message Text="----------- done building -------------------- starting next one: ---------------" />
+    <MSBuild Condition=" '$(Framework)' != 'NET35'" Projects="$(MSBuildProjectFile)" Properties="Framework=NET35;preMVC=1;nestedbuild=1;TargetFrameworkVersion=v3.5" RunEachTargetSeparately="true" />
+    <MSBuild Condition=" '$(Framework)' == 'NET40' AND '$(preMVC)' == '0'" Projects="$(MSBuildProjectFile)" Properties="Framework=NET40;preMVC=1;nestedbuild=1;TargetFrameworkVersion=v4.0" RunEachTargetSeparately="true" />
+    <MSBuild Condition=" '$(Framework)' == 'NET40' AND '$(preMVC)' == '1'" Projects="$(MSBuildProjectFile)" Properties="Framework=NET40;preMVC=0;nestedbuild=1;TargetFrameworkVersion=v4.0" RunEachTargetSeparately="true" />
+  </Target>
 </Project>
