@@ -77,11 +77,15 @@ namespace Glass.Sitecore.Mapper.Tests.Dynamic
             dynamic d = new DynamicItem(item);
 
             //Act
-            var child = d.Children.First(Dy.Fc(x => x.Name == "Child2"));
+            var func = Dy.Fc(x => x.Name == "Child2");
+
+            var child = d.Children.First(func);
 
             //Assert
             Assert.AreEqual("/sitecore/content/DynamicItem/Test/Child2", child.Path);
         }
+
+      
 
         [Test]
         public void Last()
@@ -221,7 +225,7 @@ namespace Glass.Sitecore.Mapper.Tests.Dynamic
             dynamic d = new DynamicItem(item);
 
             //Act
-            var children = d.Children.Select(Dy.Fc<Known>(x => new Known { Name = x.Name })) as IEnumerable<Known>;
+            var children = d.Children.Select(Dy.FcT<Known>(x => new Known { Name = x.Name })) as IEnumerable<Known>;
             var child = children.First();
             //Assert
             
@@ -237,7 +241,7 @@ namespace Glass.Sitecore.Mapper.Tests.Dynamic
             dynamic d = new DynamicItem(item);
 
             //Act
-            var children = d.Children.Select(Dy.Fc(x => new { Name = x.Name })) as IEnumerable<dynamic>;
+            var children = d.Children.Select(Dy.FcT(x => new { Name = x.Name })) as IEnumerable<dynamic>;
             var child = children.First();
             //Assert
 
@@ -253,7 +257,7 @@ namespace Glass.Sitecore.Mapper.Tests.Dynamic
             dynamic d = new DynamicItem(item);
 
             //Act
-            var child = d.Children.Where(Dy.Fc(x=> x.Name == "Child2")).Select(Dy.Fc(x => new { NewPath = x.Path, NewName = x.Name })).First();
+            var child = d.Children.Where(Dy.Fc(x=> x.Name == "Child2")).Select(Dy.FcT(x => new { NewPath = x.Path, NewName = x.Name })).First();
 
             //Assert
             Assert.AreEqual("/sitecore/content/DynamicItem/Test/Child2", child.NewPath);
