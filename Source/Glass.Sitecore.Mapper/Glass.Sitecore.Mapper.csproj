@@ -346,8 +346,8 @@
     <Message Text="Framework: $(Framework)" Importance="high" />
     <Message Text="TargetFrameworkVersion: $(TargetFrameworkVersion)" Importance="high" />
   </Target>
-  <Target Name="AfterBuild" Condition=" '$(nestedbuild)' == '' ">
-    <Message Text="----------- done building -------------------- starting next one: ---------------" />
+  <Target Name="AfterBuild" Condition=" '$(nestedbuild)' == '' AND '$(Configuration)' == 'Release'">
+   <Message Text="----------- done building -------------------- starting next one: ---------------" />
     <MSBuild Condition=" '$(Framework)' != 'NET35'" Projects="$(MSBuildProjectFile)" Properties="Framework=NET35;preMVC=1;nestedbuild=1;TargetFrameworkVersion=v3.5" RunEachTargetSeparately="true" />
     <MSBuild Condition=" '$(Framework)' == 'NET40' AND '$(preMVC)' == '0'" Projects="$(MSBuildProjectFile)" Properties="Framework=NET40;preMVC=1;nestedbuild=1;TargetFrameworkVersion=v4.0" RunEachTargetSeparately="true" />
     <MSBuild Condition=" '$(Framework)' == 'NET40' AND '$(preMVC)' == '1'" Projects="$(MSBuildProjectFile)" Properties="Framework=NET40;preMVC=0;nestedbuild=1;TargetFrameworkVersion=v4.0" RunEachTargetSeparately="true" />

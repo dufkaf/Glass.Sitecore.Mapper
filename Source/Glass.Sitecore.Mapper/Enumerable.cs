@@ -28,12 +28,13 @@ namespace Glass.Sitecore.Mapper
     {
         private Func<IEnumerable<Item>> _getItems;
         private ISitecoreService _service;
-
-
-        //IList<T> _itemList = null;
-        //bool _loaded = false;
-
+        
+#if NET40
         private Lazy<IList<T>> _lazyItemList;
+#else
+        private IList<T> _lazyItemList;
+        bool _loaded = false;
+#endif
 
         private bool _isLazy = true;
         private bool _inferType = false;
@@ -44,7 +45,10 @@ namespace Glass.Sitecore.Mapper
             _service = service;
             _isLazy = isLazy;
             _inferType = inferType;
+
+#if NET40
             _lazyItemList = new Lazy<IList<T>>(LoadItems);
+#endif
         }
 
 
@@ -75,9 +79,12 @@ namespace Glass.Sitecore.Mapper
 
         public IEnumerator<T> GetEnumerator()
         {
-            //if (!_loaded) LoadItems();
-            //return _itemList.GetEnumerator();
+#if NET40
             return _lazyItemList.Value.GetEnumerator();
+#else
+            if (! _loaded) _lazyItemList = LoadItems();
+            return _lazyItemList.GetEnumerator();
+#endif
         }
 
 

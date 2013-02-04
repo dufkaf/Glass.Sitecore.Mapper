@@ -58,10 +58,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Castle.Core.3.1.0\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Glass.Sitecore.Mapper, Version=2.0.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Glass.Sitecore.Mapper\bin\Debug\NET40\Glass.Sitecore.Mapper.dll</HintPath>
-    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Depends\HtmlAgilityPack.dll</HintPath>
@@ -307,6 +303,12 @@
     </None>
     <None Include="packages.config" />
     <None Include="Readme.textile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Glass.Sitecore.Mapper\Glass.Sitecore.Mapper.csproj">
+      <Project>{564cdd78-0939-436b-9c90-7af9d95b9024}</Project>
+      <Name>Glass.Sitecore.Mapper</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
