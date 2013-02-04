@@ -35,5 +35,7 @@ namespace Glass.Sitecore.Mapper.CodeFirst
         public ID SectionId { get; set; }
         public ID TemplateId { get; set; }
         public int SectionSortOrder { get; set; }
+
+        public bool Existing { get; set; }
     }
 }
