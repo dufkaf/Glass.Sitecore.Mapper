@@ -246,11 +246,13 @@ namespace Glass.Sitecore.Mapper.CodeFirst
                     var exists = existing.FirstOrDefault(def => def.Name.Equals(section));
                     if (exists != null)
                     {
-                        record = new SectionInfo(section, exists.ID, itemDefinition.ID, section.SectionSortOrder) {Existing = true};
+                      
+                        record =  new SectionInfo(section.SectionName, exists.ID, itemDefinition.ID, section.SectionSortOrder){Existing = true};
                     }
                     else
                     {
-                        record = new SectionInfo(section, new ID(Guid.NewGuid()), itemDefinition.ID, section.SectionSortOrder);
+                       
+                        record = new SectionInfo(section.SectionName, new ID(Guid.NewGuid()), itemDefinition.ID, section.SectionSortOrder);
                     }
                     SectionTable.Add(record);
                 }
@@ -296,11 +298,9 @@ namespace Glass.Sitecore.Mapper.CodeFirst
                         if (record == null)
                         {
                             string fieldName = attr.FieldName.IsNullOrEmpty() ? field.Property.Name : attr.FieldName;
-                            
-                            record = new FieldInfo(new ID(guidId), section.SectionId, fieldName, attr.FieldType, attr.FieldSource, attr.FieldTitle, attr.IsShared, attr.IsUnversioned);
-                            var fieldfieldInfoAttributes = field.Property.GetCustomAttributes(typeof(SitecoreFieldFieldValueAttribute), true);
-                            record = new FieldInfo(new ID(guidId), section.SectionId, fieldName, attr.FieldType,
-                                                   attr.FieldSource, attr.FieldTitle, attr.IsShared, attr.IsUnversioned);
+                           
+
+                            record = new FieldInfo(new ID(guidId), section.SectionId, fieldName, attr.FieldType, attr.FieldSource, attr.FieldTitle, attr.IsShared, attr.IsUnversioned, attr.FieldSortOrder, attr.ValidationRegularExpression, attr.ValidationErrorText, attr.IsRequired);
                             var fieldfieldInfoAttributes =
                                 field.Property.GetCustomAttributes(typeof (SitecoreFieldFieldValueAttribute), true);
                             if (fieldfieldInfoAttributes != null && fieldfieldInfoAttributes.Any())
