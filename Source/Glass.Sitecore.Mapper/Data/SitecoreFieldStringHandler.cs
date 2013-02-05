@@ -68,6 +68,10 @@ namespace Glass.Sitecore.Mapper.Data
                     string fieldValue = value.ToString();
                     field.Value = fieldValue;
                 }
+                else
+                {
+                    field.Value = string.Empty;
+                }
             }
         }
 
