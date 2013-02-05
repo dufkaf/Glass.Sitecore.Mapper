@@ -38,10 +38,13 @@ namespace Glass.Sitecore.Mapper
         public static Type GetGenericArgument(Type type)
         {
             Type[] types = type.GetGenericArguments();
-            if(types.Count() > 1) throw new MapperException("Type {0} has more than one generic argument".Formatted(type.FullName));
-            if (types.Count() == 0) throw new MapperException("The type {0} does not contain any generic arguments".Formatted(type.FullName));
+            if (types.Count() > 1)
+                throw new MapperException("Type {0} has more than one generic argument".Formatted(type.FullName));
+            if (types.Count() == 0)
+                throw new MapperException("The type {0} does not contain any generic arguments".Formatted(type.FullName));
             return types[0];
         }
+
         public static Type GetGenericOuter(Type type)
         {
             return type.GetGenericTypeDefinition();
@@ -57,16 +60,16 @@ namespace Glass.Sitecore.Mapper
             MethodInfo addMethod = list.GetType().GetMethod("Add");
 
             items.ForEach(x =>
-            {
-                addMethod.Invoke(list, new object[] { x });
-            });
+                              {
+                                  addMethod.Invoke(list, new object[] {x});
+                              });
         }
 
-        public static object InvokeMethod(string methodName, object target, params object [] parameters)
+        public static object InvokeMethod(string methodName, object target, params object[] parameters)
         {
             MethodInfo method = target.GetType().GetMethod(methodName);
 
-                return method.Invoke(target, parameters);
+            return method.Invoke(target, parameters);
         }
 
 
@@ -81,13 +84,14 @@ namespace Glass.Sitecore.Mapper
         {
             return CreateGenericType(type, arguments, null);
         }
+
         /// <summary>
         /// </summary>
         /// <param name="type">The generic type to create e.g. List&lt;&gt;</param>
         /// <param name="arguments">The list of subtypes for the generic type, e.g string in List&lt;string&gt;</param>
         /// <param name="parameters"> List of parameters to pass to the constructor.</param>
         /// <returns></returns>
-        public static object CreateGenericType(Type type, Type[] arguments, params  object[] parameters)
+        public static object CreateGenericType(Type type, Type[] arguments, params object[] parameters)
         {
             Type genericType = type.MakeGenericType(arguments);
             object obj;
@@ -96,11 +100,11 @@ namespace Glass.Sitecore.Mapper
             else
                 obj = Activator.CreateInstance(genericType);
             return obj;
-            
+
         }
 
 
-     
+
 
 
 
@@ -109,9 +113,11 @@ namespace Glass.Sitecore.Mapper
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
-        public static bool IsSetMethod(MethodInfo info){
+        public static bool IsSetMethod(MethodInfo info)
+        {
             return info.IsSpecialName && info.Name.StartsWith("set_");
         }
+
         /// <summary>
         /// Checks if a method is a get property method
         /// </summary>
@@ -134,7 +140,7 @@ namespace Glass.Sitecore.Mapper
 
             if (expression.NodeType == ExpressionType.Convert)
             {
-                Expression operand=(expression as UnaryExpression).Operand;
+                Expression operand = (expression as UnaryExpression).Operand;
                 name = operand.CastTo<MemberExpression>().Member.Name;
 
             }
@@ -187,7 +193,8 @@ namespace Glass.Sitecore.Mapper
             return propertyList.ToArray();
         }
 
-        public static BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy | BindingFlags.Instance;
+        public static BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy |
+                                           BindingFlags.Instance;
 
         public static PropertyInfo GetProperty(Type type, string name)
         {
@@ -199,7 +206,8 @@ namespace Glass.Sitecore.Mapper
         /// Converts a NameValueCollection in to HTML attributes
         /// </summary>
         /// <param name="attributes">A list of atrributes to convert</param>
-        public static string ConvertAttributes(NameValueCollection attributes){
+        public static string ConvertAttributes(NameValueCollection attributes)
+        {
 
             if (attributes == null || attributes.Count == 0) return "";
 
@@ -220,24 +228,47 @@ namespace Glass.Sitecore.Mapper
             if (urlOptions == 0) return defaultUrl;
 
             //check for any default overrides
-            defaultUrl.AddAspxExtension = (urlOptions & SitecoreInfoUrlOptions.AddAspxExtension) == SitecoreInfoUrlOptions.AddAspxExtension ? true : defaultUrl.AddAspxExtension;
-            defaultUrl.AlwaysIncludeServerUrl = (urlOptions & SitecoreInfoUrlOptions.AlwaysIncludeServerUrl) == SitecoreInfoUrlOptions.AlwaysIncludeServerUrl ? true : defaultUrl.AlwaysIncludeServerUrl;
-            defaultUrl.EncodeNames = (urlOptions & SitecoreInfoUrlOptions.EncodeNames) == SitecoreInfoUrlOptions.EncodeNames ? true : defaultUrl.EncodeNames;
-            defaultUrl.ShortenUrls = (urlOptions & SitecoreInfoUrlOptions.ShortenUrls) == SitecoreInfoUrlOptions.ShortenUrls ? true : defaultUrl.ShortenUrls;
-            defaultUrl.SiteResolving = (urlOptions & SitecoreInfoUrlOptions.SiteResolving) == SitecoreInfoUrlOptions.SiteResolving ? true : defaultUrl.SiteResolving;
-            defaultUrl.UseDisplayName = (urlOptions & SitecoreInfoUrlOptions.UseUseDisplayName) == SitecoreInfoUrlOptions.UseUseDisplayName ? true : defaultUrl.UseDisplayName;
+            defaultUrl.AddAspxExtension = (urlOptions & SitecoreInfoUrlOptions.AddAspxExtension) ==
+                                          SitecoreInfoUrlOptions.AddAspxExtension
+                                              ? true
+                                              : defaultUrl.AddAspxExtension;
+            defaultUrl.AlwaysIncludeServerUrl = (urlOptions & SitecoreInfoUrlOptions.AlwaysIncludeServerUrl) ==
+                                                SitecoreInfoUrlOptions.AlwaysIncludeServerUrl
+                                                    ? true
+                                                    : defaultUrl.AlwaysIncludeServerUrl;
+            defaultUrl.EncodeNames = (urlOptions & SitecoreInfoUrlOptions.EncodeNames) ==
+                                     SitecoreInfoUrlOptions.EncodeNames
+                                         ? true
+                                         : defaultUrl.EncodeNames;
+            defaultUrl.ShortenUrls = (urlOptions & SitecoreInfoUrlOptions.ShortenUrls) ==
+                                     SitecoreInfoUrlOptions.ShortenUrls
+                                         ? true
+                                         : defaultUrl.ShortenUrls;
+            defaultUrl.SiteResolving = (urlOptions & SitecoreInfoUrlOptions.SiteResolving) ==
+                                       SitecoreInfoUrlOptions.SiteResolving
+                                           ? true
+                                           : defaultUrl.SiteResolving;
+            defaultUrl.UseDisplayName = (urlOptions & SitecoreInfoUrlOptions.UseUseDisplayName) ==
+                                        SitecoreInfoUrlOptions.UseUseDisplayName
+                                            ? true
+                                            : defaultUrl.UseDisplayName;
 
 
-            if ((urlOptions & SitecoreInfoUrlOptions.LanguageEmbeddingAlways) == SitecoreInfoUrlOptions.LanguageEmbeddingAlways)
+            if ((urlOptions & SitecoreInfoUrlOptions.LanguageEmbeddingAlways) ==
+                SitecoreInfoUrlOptions.LanguageEmbeddingAlways)
                 defaultUrl.LanguageEmbedding = LanguageEmbedding.Always;
-            else if ((urlOptions & SitecoreInfoUrlOptions.LanguageEmbeddingAsNeeded) == SitecoreInfoUrlOptions.LanguageEmbeddingAsNeeded)
+            else if ((urlOptions & SitecoreInfoUrlOptions.LanguageEmbeddingAsNeeded) ==
+                     SitecoreInfoUrlOptions.LanguageEmbeddingAsNeeded)
                 defaultUrl.LanguageEmbedding = LanguageEmbedding.AsNeeded;
-            else if ((urlOptions & SitecoreInfoUrlOptions.LanguageEmbeddingNever) == SitecoreInfoUrlOptions.LanguageEmbeddingNever)
+            else if ((urlOptions & SitecoreInfoUrlOptions.LanguageEmbeddingNever) ==
+                     SitecoreInfoUrlOptions.LanguageEmbeddingNever)
                 defaultUrl.LanguageEmbedding = LanguageEmbedding.Never;
 
-            if ((urlOptions & SitecoreInfoUrlOptions.LanguageLocationFilePath) == SitecoreInfoUrlOptions.LanguageLocationFilePath)
+            if ((urlOptions & SitecoreInfoUrlOptions.LanguageLocationFilePath) ==
+                SitecoreInfoUrlOptions.LanguageLocationFilePath)
                 defaultUrl.LanguageLocation = LanguageLocation.FilePath;
-            else if ((urlOptions & SitecoreInfoUrlOptions.LanguageLocationQueryString) == SitecoreInfoUrlOptions.LanguageLocationQueryString)
+            else if ((urlOptions & SitecoreInfoUrlOptions.LanguageLocationQueryString) ==
+                     SitecoreInfoUrlOptions.LanguageLocationQueryString)
                 defaultUrl.LanguageLocation = LanguageLocation.QueryString;
 
             return defaultUrl;
@@ -281,7 +312,26 @@ namespace Glass.Sitecore.Mapper
             response.OutputStream.Write(data, 0, data.Length);
         }
 
-        public static IEnumerable<AbstractSitecoreDataHandler> GetDefaultDataHanlders()
+        public static bool GuidTryParse(string input, out Guid output)
+        {
+#if NET40
+          return Guid.TryParse(input, out output);
+#else
+            try
+            {
+                output = new Guid(input);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                output = Guid.Empty;
+                return false;
+            }
+#endif
+        }
+    
+
+    public static IEnumerable<AbstractSitecoreDataHandler> GetDefaultDataHanlders()
         {
 
             //load default handlers

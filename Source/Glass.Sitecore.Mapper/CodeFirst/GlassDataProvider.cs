@@ -283,20 +283,8 @@ namespace Glass.Sitecore.Mapper.CodeFirst
                 {
 
                     Guid guidId = Guid.Empty;
-#if NET40
-                    if (Guid.TryParse(attr.FieldId, out guidId))
+                    if (Utility.GuidTryParse(attr.FieldId, out guidId))
                     {
-#else
-                    bool isGuid = false;
-                    try {
-                          guidId = new Guid(attr.FieldId);
-                          isGuid = true;    
-                    } catch (Exception ex) {
-                          isGuid = false;
-                    }
-                    if (isGuid) 
-                    {
-#endif
                         var record = FieldTable.FirstOrDefault(x => x.FieldId.Guid == guidId);
                         //test if the fields exists in the database: if so, we're using codefirst now, so remove it.
                         var existing = otherProvider.GetItemDefinition(new ID(guidId), context);

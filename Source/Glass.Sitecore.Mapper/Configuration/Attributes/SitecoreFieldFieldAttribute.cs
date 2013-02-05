@@ -35,11 +35,7 @@ namespace Glass.Sitecore.Mapper.Configuration.Attributes
         public SitecoreFieldFieldValueAttribute(string fieldId, string fieldValue)
         {
             FieldValue = fieldValue;
-#if NET40
-            FieldId = Guid.Parse(fieldId);
-#else
             FieldId = new Guid(fieldId);
-#endif
         }
 
         /// <summary>
