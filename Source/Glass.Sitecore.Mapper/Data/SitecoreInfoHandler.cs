@@ -53,7 +53,9 @@ namespace Glass.Sitecore.Mapper.Data
         {
             
             if (urlOptions == null) urlOptions = new UrlOptions();
-            urlOptions.Language = item.Language;
+
+            if(urlOptions.Language == null)
+                urlOptions.Language = item.Language;
 
             switch (infoType)
             {
