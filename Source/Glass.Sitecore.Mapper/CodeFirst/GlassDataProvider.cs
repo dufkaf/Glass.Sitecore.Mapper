@@ -308,8 +308,6 @@ namespace Glass.Sitecore.Mapper.CodeFirst
                         if (record == null)
                         {
                             string fieldName = attr.FieldName.IsNullOrEmpty() ? field.Property.Name : attr.FieldName;
-                            record = new FieldInfo(new ID(guidId), section.SectionId, fieldName, attr.FieldType, attr.FieldSource, attr.FieldTitle, attr.IsShared, attr.IsUnversioned);
-                            var fieldfieldInfoAttributes = field.Property.GetCustomAttributes(typeof(SitecoreFieldFieldValueAttribute), true);
                             
                             record = new FieldInfo(new ID(guidId), section.SectionId, fieldName, attr.FieldType, attr.FieldSource, attr.FieldTitle, attr.IsShared, attr.IsUnversioned);
                             var fieldfieldInfoAttributes = field.Property.GetCustomAttributes(typeof(SitecoreFieldFieldValueAttribute), true);
