@@ -54,6 +54,7 @@ namespace Glass.Sitecore.Mapper.Data
             else if(item.Fields.Contains(FieldId) || item.Template.OwnFields.Any(fld => fld.ID.ToGuid() == FieldId.ToGuid()))
             {
                 field = item.Fields[FieldId];
+                FieldName = field.Name;
             }
          
 
