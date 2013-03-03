@@ -67,37 +67,44 @@ namespace Glass.Sitecore.Mapper
         /// <param name="property"></param>
         public AbstractSitecoreDataHandler GetDataHandler(SitecoreProperty property)
         {
+            AbstractSitecoreDataHandler newHandler;
 
             if (property.Attribute.DataHandler != null)
             {
                 Type dataType = property.Attribute.DataHandler;
-                if (typeof(AbstractSitecoreDataHandler).IsAssignableFrom(dataType))
+                if (typeof (AbstractSitecoreDataHandler).IsAssignableFrom(dataType))
                 {
                     try
                     {
-                        return (AbstractSitecoreDataHandler)dataType.Assembly.CreateInstance(dataType.FullName);
+                        newHandler = (AbstractSitecoreDataHandler) dataType.Assembly.CreateInstance(dataType.FullName);
                     }
                     catch (Exception ex)
                     {
-                        throw new MapperException("Failed to create instance of the data handler {0} configured on property {0} on class {1}"
-                            .Formatted(dataType.FullName, property.Property.Name, property.Property.ReflectedType.FullName), ex);
+                        throw new MapperException(
+                            "Failed to create instance of the data handler {0} configured on property {0} on class {1}"
+                                .Formatted(dataType.FullName, property.Property.Name,
+                                           property.Property.ReflectedType.FullName), ex);
                     }
                 }
                 else
-                    throw new MapperException("Custom data handler does not inherit from AbstractSitecoreDataHandler for {0} on class".Formatted(property.Property.Name, property.Property.ReflectedType.FullName));
+                    throw new MapperException(
+                        "Custom data handler does not inherit from AbstractSitecoreDataHandler for {0} on class"
+                            .Formatted(property.Property.Name, property.Property.ReflectedType.FullName));
             }
+            else
+            {
+                AbstractSitecoreDataHandler handler = Datas.FirstOrDefault(x => x.WillHandle(property, Datas, Classes));
 
-            AbstractSitecoreDataHandler handler = Datas.FirstOrDefault(x => x.WillHandle(property, Datas, Classes));
+                if (handler == null)
+                    throw new NotSupportedException("No data handler for: \n\r Class: {0} \n\r Member: {1} \n\r Attribute: {2}"
+                                                        .Formatted(
+                                                            property.Property.ReflectedType.FullName,
+                                                            property.Property.Name,
+                                                            property.Attribute.GetType().FullName
+                                                        ));
 
-            if (handler == null)
-                throw new NotSupportedException("No data handler for: \n\r Class: {0} \n\r Member: {1} \n\r Attribute: {2}"
-                    .Formatted(
-                        property.Property.ReflectedType.FullName,
-                        property.Property.Name,
-                        property.Attribute.GetType().FullName
-                    ));
-
-            var newHandler = handler.Clone() as AbstractSitecoreDataHandler;
+                newHandler = handler.Clone() as AbstractSitecoreDataHandler;
+            }
             newHandler.ConfigureDataHandler(property);
 
             return newHandler;

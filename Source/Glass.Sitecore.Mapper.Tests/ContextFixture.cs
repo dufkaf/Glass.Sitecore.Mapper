@@ -53,6 +53,8 @@ namespace Glass.Sitecore.Mapper.Tests
 
             //Assert
             Assert.AreEqual(2, instance.Classes.Count());
+
+            
         }
 
         [Test]
