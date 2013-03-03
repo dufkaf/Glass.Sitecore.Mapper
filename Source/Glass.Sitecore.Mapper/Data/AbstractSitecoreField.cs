@@ -55,6 +55,7 @@ namespace Glass.Sitecore.Mapper.Data
 
             {
                 field = item.Fields[FieldId];
+                FieldName = field.Name;
             }
          
 
