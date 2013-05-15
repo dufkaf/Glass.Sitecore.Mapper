@@ -18,6 +18,10 @@ namespace Glass.Sitecore.Mapper.Pipelines.Response
                 try
                 {
                     Type type = GetFromField(args.Rendering, args);
+                    
+                    if (type == null)
+                        return;
+
                     if (Context.StaticContext.Classes.ContainsKey(type))
                     {
                         ISitecoreContext context = new SitecoreContext();
@@ -38,9 +42,10 @@ namespace Glass.Sitecore.Mapper.Pipelines.Response
 
         protected virtual Type GetFromField(Rendering rendering, GetModelArgs args)
         {
+
             Item obj = ObjectExtensions.ValueOrDefault<RenderingItem, Item>(rendering.RenderingItem, (Func<RenderingItem, Item>)(i => i.InnerItem));
             if (obj == null)
-                throw new MapperException("No rendering item");
+                return null;
             else
                 return Type.GetType(obj["Model"], true);
         }
