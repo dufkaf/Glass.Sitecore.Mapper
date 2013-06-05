@@ -42,7 +42,7 @@ namespace Glass.Sitecore.Mapper
             }
 
             //if the class should be lazy loaded or is an interface then load using a proxy
-            if (isLazy || type.IsInterface)
+            if (isLazy || config.Type.IsInterface)
             {
                 return ProxyGenerator.CreateProxy(config, service, item, inferType);
             }
